@@ -1,14 +1,21 @@
-# abnt-5891@1.0.0
+# nfs-xml2obj
 
-Função basica de arredondamento no padrão ABNT 5891, utlizado para arredondamentos em aliquota, ISS e base de calculo de NFS.
+Pacote retorna dados especificos das NFS.
 
 ## 🚀 Uso
 
 Exemplo de Uso:
 
 ```
-import roundAbnt from 'abnt-5891'
-const decimais = 2
-const value = 4.305001
-roundAbnt(decimais, value) // 4.30
+import dataNfs from 'nfs-xml2obj'
+
+const dadoV2 = await dataNfs.getDataNFSv2(xmlString)
+dadoV2 = [ true,
+  {
+    cnpjEmit: '12891538000112',
+    cnpjDest: '09179444000100',
+    valorNF: '340.00',
+    Numero: '2185'
+  }
+]
 ```
