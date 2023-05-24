@@ -1,17 +1,320 @@
-const xml2js = require('xml2js');
+import { V2Response } from 'data-nfs'
 
-const validators = {
-    cpnj: {
-      text: ['cnpj'],
-      keyValidatorsFrom: ['emit', 'prest'],
-      keyValidatorsTo: ['toma', 'dest'],
+import xml2js from 'xml2js'
+
+interface ValidatorItem {
+  text: TextItem[]
+  keyValidatorsFrom?: TextItem[]
+  keyValidatorsTo?: TextItem[]
+  primitive: ValidationPrimitives
+}
+
+interface Primitive {
+  value: boolean
+}
+
+interface ValidationPrimitives {
+  isCalculated: Primitive
+  isNumber: Primitive
+  isInt: Primitive
+}
+
+interface ValidationPrimitivesFunction {
+  isCalculated: (
+    foundItem: any,
+    searchedItem: any,
+    primitive: ValidationPrimitives
+  ) => boolean
+  isNumber: (searchedItem: any) => boolean
+  isInt: (searchedItem: any) => boolean
+}
+
+interface TextItem {
+  value: string
+  isLike: boolean
+}
+
+interface Validators {
+  [key: string]: ValidatorItem
+}
+
+const BASE_PRIMITIVES: ValidationPrimitives = {
+  isCalculated: {
+    value: false,
+  },
+  isNumber: {
+    value: false,
+  },
+  isInt: {
+    value: false,
+  },
+}
+
+const BASE_TEXT_ITEM: TextItem = {
+  value: '',
+  isLike: true,
+}
+
+const validatorFunctions: ValidationPrimitivesFunction = {
+  isCalculated: (
+    foundItem: any,
+    searchedItem: any,
+    primitive: ValidationPrimitives
+  ) => {
+    const foundItemIsAObject = typeof foundItem === 'object'
+    const searchedItemIsAObject = typeof searchedItem === 'object'
+
+    return (
+      !foundItemIsAObject &&
+      !searchedItemIsAObject &&
+      primitive.isCalculated.value &&
+      Number(searchedItem) > Number(foundItem)
+    )
+  },
+  isNumber: (searchedItem: any) => {
+    const searchedItemIsAObject = typeof searchedItem === 'object'
+
+    return (
+      !searchedItemIsAObject &&
+      !isNaN(searchedItem) &&
+      !isNaN(parseFloat(searchedItem))
+    )
+  },
+  isInt: (searchedItem: any) => {
+    const searchedItemIsAObject = typeof searchedItem === 'object'
+
+    return (
+      !searchedItemIsAObject &&
+      Number.isInteger(Number(searchedItem)) &&
+      searchedItem?.length === String(Number(searchedItem)).length
+    )
+  },
+}
+
+const validators: Validators = {
+  cpnj: {
+    text: [
+      {
+        value: 'cnpj',
+        isLike: true,
+      },
+    ],
+    keyValidatorsFrom: [
+      {
+        value: 'emit',
+        isLike: true,
+      },
+      {
+        value: 'prest',
+        isLike: true,
+      },
+    ],
+    keyValidatorsTo: [
+      {
+        value: 'toma',
+        isLike: true,
+      },
+      {
+        value: 'dest',
+        isLike: true,
+      },
+      {
+        value: 'tom',
+        isLike: true,
+      },
+    ],
+    primitive: BASE_PRIMITIVES,
+  },
+  value: {
+    text: [
+      {
+        value: 'valor',
+        isLike: true,
+      },
+      {
+        value: 'total',
+        isLike: true,
+      },
+      {
+        value: 'vnf',
+        isLike: true,
+      },
+      {
+        value: 'valorservicos',
+        isLike: true,
+      },
+    ],
+    primitive: {
+      ...BASE_PRIMITIVES,
+      isCalculated: {
+        value: true,
+      },
+      isNumber: {
+        value: true,
+      },
     },
-    value: {
-      text: ['valor', 'total', 'vnf', 'valorservicos'],
+  },
+  grossValue: {
+    text: [
+      {
+        value: 'basecalc',
+        isLike: true,
+      },
+      {
+        value: 'vprod',
+        isLike: true,
+      },
+      {
+        value: 'valorbase',
+        isLike: true,
+      },
+      {
+        value: 'valorservicos',
+        isLike: false,
+      },
+    ],
+    primitive: {
+      ...BASE_PRIMITIVES,
+      isCalculated: {
+        value: true,
+      },
+      isNumber: {
+        value: true,
+      },
     },
-    number: {
-      text: ['numero', 'cod', 'nNF'],
+  },
+  liquidValue: {
+    text: [
+      {
+        value: 'liquido',
+        isLike: true,
+      },
+      {
+        value: 'VALORTOTALSERVICOS',
+        isLike: true,
+      },
+      {
+        value: 'ValorServicos',
+        isLike: true,
+      },
+    ],
+    primitive: {
+      ...BASE_PRIMITIVES,
+      isCalculated: {
+        value: true,
+      },
+      isNumber: {
+        value: true,
+      },
     },
+  },
+  number: {
+    text: [
+      {
+        value: 'numero',
+        isLike: false,
+      },
+      {
+        value: 'cod',
+        isLike: true,
+      },
+      {
+        value: 'nNF',
+        isLike: true,
+      },
+    ],
+    primitive: {
+      ...BASE_PRIMITIVES,
+      isNumber: {
+        value: true,
+      },
+      isInt: {
+        value: true,
+      },
+    },
+  },
+  withheldIss: {
+    text: [
+      {
+        value: 'issretido',
+        isLike: true,
+      },
+      {
+        value: 'ISSQNRetido',
+        isLike: true,
+      },
+      {
+        value: 'retido',
+        isLike: false,
+      },
+    ],
+    primitive: {
+      ...BASE_PRIMITIVES,
+    },
+  },
+  issValue: {
+    text: [
+      {
+        value: 'valoriss',
+        isLike: true,
+      },
+      {
+        value: 'ValorISSQNCalculado',
+        isLike: true,
+      },
+    ],
+    primitive: {
+      ...BASE_PRIMITIVES,
+      isNumber: {
+        value: true,
+      },
+      isCalculated: {
+        value: true,
+      },
+    },
+  },
+  deductionValue: {
+    text: [
+      {
+        value: 'deducoes',
+        isLike: true,
+      },
+      {
+        value: 'vDesc',
+        isLike: true,
+      },
+      {
+        value: 'Deduc',
+        isLike: true,
+      },
+    ],
+    primitive: {
+      ...BASE_PRIMITIVES,
+      isNumber: {
+        value: true,
+      },
+      isCalculated: {
+        value: true,
+      },
+    },
+  },
+  retentions: {
+    text: [
+      {
+        value: 'retenc',
+        isLike: true,
+      },
+    ],
+    primitive: {
+      ...BASE_PRIMITIVES,
+      isNumber: {
+        value: true,
+      },
+      isCalculated: {
+        value: true,
+      },
+    },
+  },
 }
 
 const findNf = (ND: any): any => {
@@ -19,188 +322,356 @@ const findNf = (ND: any): any => {
   const isObject = typeof ND === 'object'
 
   if (isArray) {
-      return findNf(ND[0])
+    return findNf(ND[0])
   }
 
   if (isObject) {
-      const keys = Object.keys(ND)
+    const keys = Object.keys(ND)
 
-      if (keys.length > 1) {
+    if (keys.length > 1) {
+      const indexValues = keys.findIndex(
+        (item) => item.toLowerCase().indexOf('valor') > -1
+      )
+
       const indexNFSE = keys.findIndex(
-          (item) => item.toLowerCase().indexOf('nfse') > -1
+        (item) => item.toLowerCase().indexOf('nfse') > -1
       )
 
       const indexNFE = keys.findIndex(
-          (item) => item.toLowerCase().indexOf('nfe') > -1
+        (item) => item.toLowerCase().indexOf('nfe') > -1
       )
 
-      if (indexNFSE > -1 && keys.length < 7) {
-          return findNf(ND[keys[indexNFSE]])
+      if (indexNFSE > -1 && keys.length < 7 && indexValues < 0) {
+        return findNf(ND[keys[indexNFSE]])
       }
 
-      if (indexNFE > -1 && keys.length < 7) {
-          return findNf(ND[keys[indexNFE]])
+      if (indexNFE > -1 && keys.length < 7 && indexValues < 0) {
+        return findNf(ND[keys[indexNFE]])
       }
 
       return ND
-      }
+    }
 
-      return findNf(ND[keys[0]])
+    return findNf(ND[keys[0]])
   }
 
   return null
 }
 
+const searchItem = (
+  NF: any,
+  item: TextItem,
+  validator?: TextItem,
+  foundItem?: any,
+  primitive: ValidationPrimitives = BASE_PRIMITIVES
+) => {
+  const searchedItem = findItem(NF, item, validator)?.found
+
+  const foundItemIsAObject = typeof foundItem === 'object'
+  const searchedItemIsAObject = typeof searchedItem === 'object'
+
+  const hasSearchedItemAndFoundItemIsNotValid =
+    (!foundItem || foundItemIsAObject) && searchedItem
+
+  const isCalculatedAndIsHigher = validatorFunctions.isCalculated(
+    foundItem,
+    searchedItem,
+    primitive
+  )
+
+  const isValid =
+    hasSearchedItemAndFoundItemIsNotValid || isCalculatedAndIsHigher
+
+  const isNumber = validatorFunctions.isNumber(searchedItem)
+
+  if (primitive.isNumber.value) {
+    const isInt = validatorFunctions.isInt(searchedItem)
+
+    if (isValid && isNumber) {
+      return primitive.isInt.value
+        ? isInt
+          ? searchedItem
+          : undefined
+        : searchedItem
+    }
+
+    return
+  }
+
+  if (isValid) {
+    const filteredItem = searchedItemIsAObject
+      ? findItem(searchedItem, item)?.found
+      : searchedItem
+
+    return filteredItem
+  }
+
+  return undefined
+}
+
 const findItemByList = (
   NF: any,
-  list: string[],
-  validatorsList: string[] = []
-  ) => {
+  list: TextItem[],
+  validatorsList: TextItem[] = [],
+  primitive: ValidationPrimitives = BASE_PRIMITIVES
+) => {
   let foundItem: any
 
+  const keys = Object.keys(NF)
+
   list.forEach((item) => {
-      if (validatorsList.length > 0) {
+    if (validatorsList.length > 0) {
       return validatorsList.forEach((valid) => {
-          const searchedItem = findItem(NF, item, valid)?.found
+        if (keys.length < 5) {
+          keys.forEach((key) => {
+            const nf = Array.isArray(NF[key]) ? NF[key][0] : NF[key]
 
-          if ((!foundItem || typeof foundItem === 'object') && searchedItem) {
-          foundItem = searchedItem
+            const searchedItem = searchItem(
+              nf,
+              item,
+              valid,
+              foundItem,
+              primitive
+            )
+
+            if (searchedItem) {
+              foundItem = searchedItem
+            }
+          })
+        } else {
+          const searchedItem = searchItem(NF, item, valid, foundItem, primitive)
+
+          if (searchedItem) {
+            foundItem = searchedItem
           }
+        }
       })
-      }
-      const searchedItem = findItem(NF, item)?.found
+    }
 
-      if ((!foundItem || typeof foundItem === 'object') && searchedItem) {
-        foundItem = findItem(NF, item)?.found
-      }
+    const searchedItem = searchItem(
+      NF,
+      item,
+      BASE_TEXT_ITEM,
+      foundItem,
+      primitive
+    )
+
+    if (searchedItem) {
+      foundItem = searchedItem
+    }
   })
 
   if (typeof foundItem === 'object') {
-      const values = Object.values(foundItem)
+    const values = Object.values(foundItem)
 
-      return Array.isArray(values[0]) ? values[0][0] : values[0]
+    return Array.isArray(values[0]) ? values[0][0] : values[0]
   }
 
   return foundItem
 }
 
-const findItem = (NF: any, item: string, keyValidator = '') => {
-if (keyValidator.trim()) {
+const findItem = (
+  NF: any,
+  item: TextItem,
+  keyValidator: TextItem = BASE_TEXT_ITEM
+) => {
+  if (keyValidator.value.trim()) {
     const keys = Object.keys(NF)
 
     const filteredKeys = keys.filter(
-    (key) => key.toLowerCase().indexOf(keyValidator.toLowerCase()) > -1
+      (key) => key.toLowerCase().indexOf(keyValidator.value.toLowerCase()) > -1
     )
 
     if (filteredKeys.length > 5) {
-    const keyIndex = filteredKeys.findIndex(
-        (filtKey) => filtKey.toLowerCase().indexOf(item.toLowerCase()) > -1
-    )
+      const keyIndex = filteredKeys.findIndex(
+        (filtKey) =>
+          filtKey.toLowerCase().indexOf(item.value.toLowerCase()) > -1
+      )
 
-    const value = findVal(NF, filteredKeys[keyIndex])
+      const value = findVal(NF, {
+        ...item,
+        value: filteredKeys[keyIndex],
+      })
 
-    if (value) {
+      if (value) {
         return {
-        found: value,
+          found: value,
         }
+      }
     }
-    }
-}
+  }
 
-const value = findVal(
+  const value = findVal(
     NF,
     item,
-    keyValidator.trim() ? keyValidator : undefined
-)
+    keyValidator.value.trim() ? keyValidator : undefined
+  )
 
   if (value) {
-      return {
+    return {
       found: value,
-      }
+    }
   }
 
   return null
 }
 
 function findVal(
-object: any,
-key: string,
-keyValidator?: string,
-validated = false
+  object: any,
+  keyObj: TextItem,
+  keyValidator?: TextItem,
+  validated = false
 ) {
-var value
-Object.keys(object).some(function (k) {
+  var value: any
+  Object.keys(object).some(function (k) {
     if (
-    keyValidator &&
-    k.toLowerCase().indexOf(keyValidator.toLowerCase()) > -1
+      keyValidator &&
+      (keyValidator.isLike
+        ? k.toLowerCase().indexOf(keyValidator.value.toLowerCase()) > -1
+        : k.toLowerCase() === keyValidator.value.toLowerCase())
     ) {
-    const kValue = Array.isArray(object[k]) ? object[k][0] : object[k]
+      const kValue = Array.isArray(object[k]) ? object[k][0] : object[k]
 
-    value = findVal(object[k], key, keyValidator, typeof kValue === 'object')
-    return typeof kValue === 'object'
+      value = findVal(
+        object[k],
+        keyObj,
+        keyValidator,
+        typeof kValue === 'object'
+      )
+
+      return value !== undefined
     }
 
-    if (k.toLowerCase().indexOf(key.toLowerCase()) > -1) {
-    if ((keyValidator && validated) || !keyValidator) {
+    if (
+      keyObj.isLike
+        ? k.toLowerCase().indexOf(keyObj.value.toLowerCase()) > -1
+        : k.toLowerCase() === keyObj.value.toLowerCase()
+    ) {
+      if ((keyValidator && validated) || !keyValidator) {
         value = Array.isArray(object[k]) ? object[k][0] : object[k]
         return true
+      }
     }
-    }
+
     if (object[k] && typeof object[k] === 'object') {
-    value = findVal(object[k], key, keyValidator, validated)
-    return value !== undefined
+      value = findVal(object[k], keyObj, keyValidator, validated)
+      return value !== undefined
     }
-})
-return value
+  })
+
+  return value
 }
 
-const getDataNFSv2 = async (xmlString: String) => {
-  const stripPrefix = xml2js.processors.stripPrefix;
-  const result: any =  await new Promise((resolve, reject) => {
+const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
+  const stripPrefix = xml2js.processors.stripPrefix
+  const result: any = await new Promise((resolve, reject) => {
     const parser = new xml2js.Parser({
-      attrkey: "ATTR",
-      tagNameProcessors: [ stripPrefix ],
-      attrNameProcessors: [ stripPrefix ]
-    });
+      attrkey: 'ATTR',
+      tagNameProcessors: [stripPrefix],
+      attrNameProcessors: [stripPrefix],
+    })
 
-    parser.parseString(xmlString, (error: any, result: any) => {
+    parser.parseString(xmlString, (error, result) => {
       if (error) resolve(false)
       else resolve(result)
     })
   })
 
   if (result?.EnviarLoteRpsEnvio) {
-    return [false, 'Não é possivel validar o fiscal com o XML do RPS, é nescessario o XML da nota fiscal.']
+    throw Error(
+      'Não é possivel validar o fiscal com o XML do RPS, é nescessario o XML da nota fiscal.'
+    )
   }
-  const dados: any = {
-    cnpjEmit: false,
-    cnpjDest: false,
-    valorNF: false,
-    Numero: false
-  }
+
   try {
-      dados.cnpjEmit = findItemByList(result, validators.cpnj.text, validators.cpnj.keyValidatorsFrom),
-      dados.cnpjDest = findItemByList(result, validators.cpnj.text, validators.cpnj.keyValidatorsTo),
-      dados.valorNF = findItemByList(result, validators.value.text, []),
-      dados.Numero = findItemByList(result, validators.number.text, []),
-      // ADICIONAR
-      dados.issRetiro = false,
-      dados.ValorDeducoes = false,
-      dados.ValorIssRetido = false,
-      dados.OutrasRetencoes = false,
-      dados.ValorServicosBruto = false,
-      dados.ValorLiquido = false
-  } catch (error) {
-    return [false, 'ERRO']
-  }
-  for (const key in dados) {
-    if (Object.prototype.hasOwnProperty.call(dados, key)) {
-      if (!dados[key]) {
-        return [false, `Bool(${key}) == false`]
-      }
+    const nfs = findNf(result)
+
+    const cnpjEmit = findItemByList(
+      nfs,
+      validators.cpnj.text,
+      validators.cpnj.keyValidatorsFrom
+    )
+
+    const cnpjDest = findItemByList(
+      nfs,
+      validators.cpnj.text,
+      validators.cpnj.keyValidatorsTo
+    )
+
+    const valorNF = findItemByList(
+      nfs,
+      validators.value.text,
+      [],
+      validators.value.primitive
+    )
+
+    const numero = findItemByList(
+      nfs,
+      validators.number.text,
+      [],
+      validators.number.primitive
+    )
+
+    const iss = findItemByList(
+      nfs,
+      validators.withheldIss.text,
+      [],
+      validators.withheldIss.primitive
+    )
+
+    const valorIss =
+      findItemByList(
+        nfs,
+        validators.issValue.text,
+        [],
+        validators.issValue.primitive
+      ) ?? '0'
+
+    const valorBruto = findItemByList(
+      nfs,
+      validators.grossValue.text,
+      [],
+      validators.grossValue.primitive
+    )
+
+    const valorLiquido = findItemByList(
+      nfs,
+      validators.liquidValue.text,
+      [],
+      validators.liquidValue.primitive
+    )
+
+    const valorDeducoes =
+      findItemByList(
+        nfs,
+        validators.deductionValue.text,
+        [],
+        validators.deductionValue.primitive
+      ) ?? '0'
+
+    const retencoes =
+      findItemByList(
+        nfs,
+        validators.retentions.text,
+        [],
+        validators.retentions.primitive
+      ) ?? '0'
+
+    return {
+      cnpjDest,
+      cnpjEmit,
+      retencoes,
+      valorDeducoes,
+      valorIss,
+      valorBruto,
+      valorLiquido,
+      valorNF,
+      iss,
+      numero,
     }
+  } catch (error) {
+    throw error
   }
-  return [true, dados]
 }
 
 export default getDataNFSv2
