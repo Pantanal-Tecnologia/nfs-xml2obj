@@ -34,20 +34,20 @@ const runTest = async () => {
       console.log('TIME: ' + (b2 - b1) + 'ms \n\n')
 
       console.log('Retorno V2 : ')
-      console.log(dadoV2[1])
+      console.log(dadoV2)
       console.log('TIME: ' + (b3 - b2) + 'ms')
 
       console.log(`${index + 1}/${array.length}`)
 
-      if (dadoLegado[1].Numero !== dadoV2[1].Numero) {
+      if (dadoLegado[1].Numero !== dadoV2.numero) {
         console.log(
           '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  OOPS: ' +
-            dadoV2[1].Numero +
+            dadoV2.numero +
             '!==' +
             dadoLegado[1].Numero
         )
       }
-      if (dadoLegado[0] && dadoV2[0]) {
+      if (dadoV2.naturezaOperacao) {
         fs.unlink(file, (err) => {
           if (err) throw err
         })

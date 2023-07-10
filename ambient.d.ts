@@ -17,6 +17,7 @@ declare module 'data-nfs' {
     valorLiquido?: string
     valorDeducoes: string
     retencoes: string
+    naturezaOperacao?: string
   }
 
   const getDataNFSLegado: (xml: string) => Promise<LegacyResponse>

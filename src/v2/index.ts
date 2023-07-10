@@ -4,8 +4,9 @@ import xml2js from 'xml2js'
 
 interface ValidatorItem {
   text: TextItem[]
-  keyValidatorsFrom?: TextItem[]
-  keyValidatorsTo?: TextItem[]
+  keyValidatorsFrom?: KeyTextItem[]
+  keyValidatorsTo?: KeyTextItem[]
+  keyValidators?: KeyTextItem[]
   primitive: ValidationPrimitives
 }
 
@@ -32,6 +33,10 @@ interface ValidationPrimitivesFunction {
 interface TextItem {
   value: string
   isLike: boolean
+}
+
+interface KeyTextItem extends TextItem {
+  mandatory?: boolean
 }
 
 interface Validators {
@@ -103,24 +108,29 @@ const validators: Validators = {
       {
         value: 'emit',
         isLike: true,
+        mandatory: true,
       },
       {
         value: 'prest',
         isLike: true,
+        mandatory: true,
       },
     ],
     keyValidatorsTo: [
       {
         value: 'toma',
         isLike: true,
+        mandatory: true,
       },
       {
         value: 'dest',
         isLike: true,
+        mandatory: true,
       },
       {
         value: 'tom',
         isLike: true,
+        mandatory: true,
       },
     ],
     primitive: BASE_PRIMITIVES,
@@ -315,6 +325,43 @@ const validators: Validators = {
       },
     },
   },
+  operationNature: {
+    text: [
+      {
+        value: 'NaturezaOperacao',
+        isLike: true,
+      },
+      {
+        value: 'ExigibilidadeISS',
+        isLike: true,
+      },
+      {
+        value: 'natureza',
+        isLike: true,
+      },
+      {
+        value: 'operacao',
+        isLike: true,
+      },
+      {
+        value: 'Codigo',
+        isLike: false,
+      },
+    ],
+    keyValidators: [
+      {
+        value: 'ExigibilidadeISSQN',
+        isLike: true,
+        mandatory: false,
+      },
+    ],
+    primitive: {
+      ...BASE_PRIMITIVES,
+      isNumber: {
+        value: true,
+      },
+    },
+  },
 }
 
 const findNf = (ND: any): any => {
@@ -361,7 +408,7 @@ const findNf = (ND: any): any => {
 const searchItem = (
   NF: any,
   item: TextItem,
-  validator?: TextItem,
+  validator?: KeyTextItem,
   foundItem?: any,
   primitive: ValidationPrimitives = BASE_PRIMITIVES
 ) => {
@@ -412,7 +459,7 @@ const searchItem = (
 const findItemByList = (
   NF: any,
   list: TextItem[],
-  validatorsList: TextItem[] = [],
+  validatorsList: KeyTextItem[] = [],
   primitive: ValidationPrimitives = BASE_PRIMITIVES
 ) => {
   let foundItem: any
@@ -421,7 +468,9 @@ const findItemByList = (
 
   list.forEach((item) => {
     if (validatorsList.length > 0) {
-      return validatorsList.forEach((valid) => {
+      let shouldReturn = false
+
+      validatorsList.forEach((valid) => {
         if (keys.length < 5) {
           keys.forEach((key) => {
             const nf = Array.isArray(NF[key]) ? NF[key][0] : NF[key]
@@ -445,7 +494,15 @@ const findItemByList = (
             foundItem = searchedItem
           }
         }
+
+        if (!shouldReturn) {
+          shouldReturn = !!valid.mandatory
+        }
       })
+
+      if (shouldReturn) {
+        return
+      }
     }
 
     const searchedItem = searchItem(
@@ -657,9 +714,16 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
         validators.retentions.primitive
       ) ?? '0'
 
+    const naturezaOperacao = findItemByList(
+      nfs,
+      validators.operationNature.text,
+      validators.operationNature.keyValidators,
+      validators.operationNature.primitive
+    )
+
     return {
-      cnpjDest,
       cnpjEmit,
+      cnpjDest,
       retencoes,
       valorDeducoes,
       valorIss,
@@ -668,6 +732,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       valorNF,
       iss,
       numero,
+      naturezaOperacao,
     }
   } catch (error) {
     throw error
