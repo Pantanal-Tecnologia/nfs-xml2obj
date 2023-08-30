@@ -1,6 +1,6 @@
 # nfs-xml2obj
 
-Pacote retorna dados especificos das NFS.
+Pacote retorna dados especificos das NFS de Diversos layouts XML.
 
 ## 🚀 Uso
 
@@ -19,3 +19,4 @@ dadoV2 = [ true,
   }
 ]
 ```
+Versão V2 by Jose Vitor
