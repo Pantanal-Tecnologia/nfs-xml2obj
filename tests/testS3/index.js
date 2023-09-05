@@ -11,7 +11,7 @@ console.log(dataNfs)
 //   console.log(err)
 // })
 const runTest = async () => {
-  s3Keys.forEach(async (item, index, array) => {
+  s3Keys.splice(0, 1000).forEach(async (item, index, array) => {
     try {
       const element = item
       console.log(
@@ -47,7 +47,7 @@ const runTest = async () => {
             dadoLegado[1].Numero
         )
       }
-      if (dadoV2.naturezaOperacao) {
+      if (!dadoV2.impostos.valorIss) {
         fs.unlink(file, (err) => {
           if (err) throw err
         })

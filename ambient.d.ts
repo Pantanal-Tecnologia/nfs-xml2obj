@@ -11,13 +11,19 @@ declare module 'data-nfs' {
     cnpjDest?: string
     valorNF?: string
     numero?: string
-    iss?: string
-    valorIss: string
     valorBruto?: string
     valorLiquido?: string
     valorDeducoes: string
     retencoes: string
     naturezaOperacao?: string
+    impostos: {
+      iss?: string
+      valorIss?: string
+      valorCofins?: string
+      valorPis?: string
+      valorIr?: string
+      valorCsll?: string
+    }
   }
 
   const getDataNFSLegado: (xml: string) => Promise<LegacyResponse>

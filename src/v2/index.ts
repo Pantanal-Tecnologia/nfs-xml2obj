@@ -362,6 +362,74 @@ const validators: Validators = {
       },
     },
   },
+  cofinsValue: {
+    text: [
+      {
+        value: 'valorcofins',
+        isLike: true,
+      },
+    ],
+    primitive: {
+      ...BASE_PRIMITIVES,
+      isNumber: {
+        value: true,
+      },
+      isCalculated: {
+        value: true,
+      },
+    },
+  },
+  csllValue: {
+    text: [
+      {
+        value: 'valorcsll',
+        isLike: true,
+      },
+    ],
+    primitive: {
+      ...BASE_PRIMITIVES,
+      isNumber: {
+        value: true,
+      },
+      isCalculated: {
+        value: true,
+      },
+    },
+  },
+  incomeTax: {
+    text: [
+      {
+        value: 'valorir',
+        isLike: true,
+      },
+    ],
+    primitive: {
+      ...BASE_PRIMITIVES,
+      isNumber: {
+        value: true,
+      },
+      isCalculated: {
+        value: true,
+      },
+    },
+  },
+  pisValue: {
+    text: [
+      {
+        value: 'valorpis',
+        isLike: true,
+      },
+    ],
+    primitive: {
+      ...BASE_PRIMITIVES,
+      isNumber: {
+        value: true,
+      },
+      isCalculated: {
+        value: true,
+      },
+    },
+  },
 }
 
 const findNf = (ND: any): any => {
@@ -461,7 +529,7 @@ const findItemByList = (
   list: TextItem[],
   validatorsList: KeyTextItem[] = [],
   primitive: ValidationPrimitives = BASE_PRIMITIVES
-) => {
+): string | undefined => {
   let foundItem: any
 
   const keys = Object.keys(NF)
@@ -676,13 +744,12 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.withheldIss.primitive
     )
 
-    const valorIss =
-      findItemByList(
-        nfs,
-        validators.issValue.text,
-        [],
-        validators.issValue.primitive
-      ) ?? '0'
+    const valorIss = findItemByList(
+      nfs,
+      validators.issValue.text,
+      [],
+      validators.issValue.primitive
+    )
 
     const valorBruto = findItemByList(
       nfs,
@@ -721,18 +788,52 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.operationNature.primitive
     )
 
+    const valorCofins = findItemByList(
+      nfs,
+      validators.cofinsValue.text,
+      validators.cofinsValue.keyValidators,
+      validators.cofinsValue.primitive
+    )
+
+    const valorPis = findItemByList(
+      nfs,
+      validators.pisValue.text,
+      validators.pisValue.keyValidators,
+      validators.pisValue.primitive
+    )
+
+    const valorIr = findItemByList(
+      nfs,
+      validators.incomeTax.text,
+      validators.incomeTax.keyValidators,
+      validators.incomeTax.primitive
+    )
+
+    const valorCsll = findItemByList(
+      nfs,
+      validators.csllValue.text,
+      validators.csllValue.keyValidators,
+      validators.csllValue.primitive
+    )
+
     return {
       cnpjEmit,
       cnpjDest,
       retencoes,
       valorDeducoes,
-      valorIss,
       valorBruto,
       valorLiquido,
       valorNF,
-      iss,
       numero,
       naturezaOperacao,
+      impostos: {
+        iss,
+        valorIss,
+        valorCofins,
+        valorPis,
+        valorIr,
+        valorCsll,
+      },
     }
   } catch (error) {
     throw error
