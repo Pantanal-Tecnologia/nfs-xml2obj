@@ -529,8 +529,8 @@ const findItemByList = (
   list: TextItem[],
   validatorsList: KeyTextItem[] = [],
   primitive: ValidationPrimitives = BASE_PRIMITIVES
-): string | undefined => {
-  let foundItem: any
+): string | null => {
+  let foundItem: any = null
 
   const keys = Object.keys(NF)
 

@@ -7,22 +7,22 @@ declare module 'data-nfs' {
   }
 
   interface V2Response {
-    cnpjEmit?: string
-    cnpjDest?: string
-    valorNF?: string
-    numero?: string
-    valorBruto?: string
-    valorLiquido?: string
+    cnpjEmit: string | null
+    cnpjDest: string | null
+    valorNF: string | null
+    numero: string | null
+    valorBruto: string | null
+    valorLiquido: string | null
     valorDeducoes: string
     retencoes: string
-    naturezaOperacao?: string
+    naturezaOperacao: string | null
     impostos: {
-      iss?: string
-      valorIss?: string
-      valorCofins?: string
-      valorPis?: string
-      valorIr?: string
-      valorCsll?: string
+      iss: string | null
+      valorIss: string | null
+      valorCofins: string | null
+      valorPis: string | null
+      valorIr: string | null
+      valorCsll: string | null
     }
   }
 
