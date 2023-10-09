@@ -202,15 +202,7 @@ const validators: Validators = {
       {
         value: 'Liquido',
         isLike: true,
-      },
-      {
-        value: 'VALORTOTALSERVICOS',
-        isLike: true,
-      },
-      {
-        value: 'ValorServicos',
-        isLike: true,
-      },
+      }
     ],
     primitive: {
       ...BASE_PRIMITIVES,
