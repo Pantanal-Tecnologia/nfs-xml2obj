@@ -200,6 +200,10 @@ const validators: Validators = {
         isLike: true,
       },
       {
+        value: 'Liquido',
+        isLike: true,
+      },
+      {
         value: 'VALORTOTALSERVICOS',
         isLike: true,
       },
