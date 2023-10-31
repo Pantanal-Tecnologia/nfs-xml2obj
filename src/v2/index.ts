@@ -180,7 +180,7 @@ const validators: Validators = {
       },
       {
         value: 'vServ',
-        isLike: true,
+        isLike: false,
       },
       {
         value: 'valorservicos',
@@ -282,7 +282,7 @@ const validators: Validators = {
       },
       {
         value: 'vISSQN',
-        isLike: true,
+        isLike: false,
       },
     ],
     primitive: {
@@ -311,7 +311,7 @@ const validators: Validators = {
       },
       {
         value: 'vCalcDR',
-        isLike: true,
+        isLike: false,
       },
     ],
     primitive: {
