@@ -179,6 +179,10 @@ const validators: Validators = {
         isLike: true,
       },
       {
+        value: 'vServ',
+        isLike: true,
+      },
+      {
         value: 'valorservicos',
         isLike: false,
       },
@@ -202,7 +206,11 @@ const validators: Validators = {
       {
         value: 'Liquido',
         isLike: true,
-      }
+      },
+      {
+        value: 'vLiq',
+        isLike: true,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
@@ -253,6 +261,10 @@ const validators: Validators = {
         value: 'retido',
         isLike: false,
       },
+      {
+        value: 'pAliqAplic',
+        isLike: false,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
@@ -266,6 +278,10 @@ const validators: Validators = {
       },
       {
         value: 'ValorISSQNCalculado',
+        isLike: true,
+      },
+      {
+        value: 'vISSQN',
         isLike: true,
       },
     ],
@@ -293,6 +309,10 @@ const validators: Validators = {
         value: 'Deduc',
         isLike: true,
       },
+      {
+        value: 'vCalcDR',
+        isLike: true,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
@@ -308,6 +328,10 @@ const validators: Validators = {
     text: [
       {
         value: 'retenc',
+        isLike: true,
+      },
+      {
+        value: 'vTotalRet',
         isLike: true,
       },
     ],
@@ -341,6 +365,10 @@ const validators: Validators = {
       },
       {
         value: 'Codigo',
+        isLike: false,
+      },
+      {
+        value: 'tribISSQN',
         isLike: false,
       },
     ],
