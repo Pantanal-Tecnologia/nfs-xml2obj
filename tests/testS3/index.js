@@ -10,52 +10,57 @@ console.log(dataNfs)
 // }).catch(err => {
 //   console.log(err)
 // })
-const runTest = async () => {
-  s3Keys.forEach(async (item, index, array) => {
-    try {
-      const element = item
-      console.log(
-        `(${index}) ##################################################################`
-      )
-      console.log('Baixando ' + element)
-      const file = await getFile(element)
 
-      console.log(file)
-
-      const xmlString = fs.readFileSync(file)
-      // const b1 = new Date().getTime()
-      // const dadoLegado = await dataNfs.getDataNFSLegado(xmlString)
-      const b2 = new Date().getTime()
-      const dadoV2 = await dataNfs.getDataNFSv2(xmlString)
-      const b3 = new Date().getTime()
-
-      // console.log('Retorno LEGADO : ')
-      // console.log(dadoLegado[1])
-      // console.log('TIME: ' + (b2 - b1) + 'ms \n\n')
-
-      console.log('Retorno V2 : ')
-      console.log(dadoV2)
-      // console.log('TIME: ' + (b3 - b2) + 'ms')
-
-      console.log(`${index + 1}/${array.length}`)
-
-      if (dadoLegado[1].Numero !== dadoV2.numero) {
-        console.log(
-          '@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  OOPS: ' +
-            dadoV2.numero +
-            '!==' +
-            dadoLegado[1].Numero
-        )
-      }
-      if (dadoV2.naturezaOperacao) {
-        fs.unlink(file, (err) => {
-          if (err) throw err
-        })
-      }
-    } catch (err) {
-      console.log(err)
+function readFiles(dirname, onFileContent, onError) {
+  fs.readdir(dirname, function (err, filenames) {
+    if (err) {
+      onError(err)
+      return
     }
+    filenames.forEach(function (filename) {
+      fs.readFile(dirname + filename, 'utf-8', function (err, content) {
+        if (err) {
+          onError(err)
+          return
+        }
+        onFileContent(filename, content)
+      })
+    })
   })
 }
 
-runTest()
+const runTest = async (filename, content) => {
+  // s3Keys.forEach(async (item, index, array) => {
+  try {
+    // const element = item
+    console.log(
+      `(${filename}) ##################################################################`
+    )
+    console.log('Baixando')
+    // const file = await getFile(element)
+
+    // console.log(file)
+
+    // const xmlString = fs.readFileSync(filename)
+    const b2 = new Date().getTime()
+    const dadoV2 = await dataNfs.getDataNFSv2(content)
+    const b3 = new Date().getTime()
+
+    console.log('Retorno V2 : ')
+    console.log(dadoV2)
+    console.log('TIME: ' + (b3 - b2) + 'ms')
+
+    // console.log(`${index + 1}/${array.length}`)
+
+    // if (dadoV2.naturezaOperacao) {
+    //   fs.unlink(file, (err) => {
+    //     if (err) throw err
+    //   })
+    // }
+  } catch (err) {
+    console.log(err)
+  }
+  // })
+}
+
+readFiles('./temp/', runTest, console.log)

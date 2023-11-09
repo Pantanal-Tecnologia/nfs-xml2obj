@@ -138,20 +138,24 @@ const validators: Validators = {
   value: {
     text: [
       {
-        value: 'valor',
+        value: 'basecalc',
         isLike: true,
       },
       {
-        value: 'total',
+        value: 'valorbase',
         isLike: true,
       },
       {
-        value: 'vnf',
-        isLike: true,
+        value: 'vServ',
+        isLike: false,
       },
       {
         value: 'valorservicos',
-        isLike: true,
+        isLike: false,
+      },
+      {
+        value: 'VALOR_SERVICO',
+        isLike: false,
       },
     ],
     primitive: {
@@ -184,6 +188,10 @@ const validators: Validators = {
       },
       {
         value: 'valorservicos',
+        isLike: false,
+      },
+      {
+        value: 'VALOR_NOTA',
         isLike: false,
       },
     ],
@@ -225,6 +233,10 @@ const validators: Validators = {
   number: {
     text: [
       {
+        value: 'NUM_NOTA',
+        isLike: false,
+      },
+      {
         value: 'numero',
         isLike: false,
       },
@@ -239,12 +251,12 @@ const validators: Validators = {
     ],
     primitive: {
       ...BASE_PRIMITIVES,
-      isNumber: {
-        value: true,
-      },
-      isInt: {
-        value: true,
-      },
+      // isNumber: {
+      //   value: true,
+      // },
+      // isInt: {
+      //   value: true,
+      // },
     },
   },
   withheldIss: {
@@ -265,6 +277,10 @@ const validators: Validators = {
         value: 'pAliqAplic',
         isLike: false,
       },
+      {
+        value: 'ALIQUOTA',
+        isLike: false,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
@@ -282,6 +298,10 @@ const validators: Validators = {
       },
       {
         value: 'vISSQN',
+        isLike: false,
+      },
+      {
+        value: 'VALOR_ISS_RET',
         isLike: false,
       },
     ],
@@ -368,7 +388,7 @@ const validators: Validators = {
         isLike: false,
       },
       {
-        value: 'tribISSQN',
+        value: 'natOp',
         isLike: false,
       },
     ],
@@ -381,9 +401,6 @@ const validators: Validators = {
     ],
     primitive: {
       ...BASE_PRIMITIVES,
-      isNumber: {
-        value: true,
-      },
     },
   },
 }
@@ -745,6 +762,8 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.operationNature.primitive
     )
 
+    const valorLiquidoValidado = !!valorLiquido ? valorLiquido : Number(valorNF) - Number(valorIss)
+
     return {
       cnpjEmit,
       cnpjDest,
@@ -752,7 +771,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       valorDeducoes,
       valorIss,
       valorBruto,
-      valorLiquido,
+      valorLiquido: String(valorLiquidoValidado),
       valorNF,
       iss,
       numero,
@@ -762,6 +781,5 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
     throw error
   }
 }
-
 
 export default getDataNFSv2
