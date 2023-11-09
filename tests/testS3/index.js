@@ -23,19 +23,19 @@ const runTest = async () => {
       console.log(file)
 
       const xmlString = fs.readFileSync(file)
-      const b1 = new Date().getTime()
-      const dadoLegado = await dataNfs.getDataNFSLegado(xmlString)
+      // const b1 = new Date().getTime()
+      // const dadoLegado = await dataNfs.getDataNFSLegado(xmlString)
       const b2 = new Date().getTime()
       const dadoV2 = await dataNfs.getDataNFSv2(xmlString)
       const b3 = new Date().getTime()
 
-      console.log('Retorno LEGADO : ')
-      console.log(dadoLegado[1])
-      console.log('TIME: ' + (b2 - b1) + 'ms \n\n')
+      // console.log('Retorno LEGADO : ')
+      // console.log(dadoLegado[1])
+      // console.log('TIME: ' + (b2 - b1) + 'ms \n\n')
 
       console.log('Retorno V2 : ')
       console.log(dadoV2)
-      console.log('TIME: ' + (b3 - b2) + 'ms')
+      // console.log('TIME: ' + (b3 - b2) + 'ms')
 
       console.log(`${index + 1}/${array.length}`)
 

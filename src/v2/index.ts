@@ -763,4 +763,5 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
   }
 }
 
+
 export default getDataNFSv2
