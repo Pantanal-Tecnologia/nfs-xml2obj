@@ -2,6 +2,26 @@ import { V2Response } from 'data-nfs'
 
 import xml2js from 'xml2js'
 
+const getNumber = (item?: any) => {
+  if (typeof item === 'undefined') return 0
+
+  if (typeof item === 'string') {
+    const dotLength = item.split('').filter((i) => i === '.').length
+
+    if (dotLength > 0 && item.indexOf(',') > -1) {
+      const newItem = item.replace('.', '').replace(',', '.')
+
+      return Number(newItem)
+    }
+
+    const newItem = item.replace(',', '.')
+
+    return Number(newItem)
+  }
+
+  return NaN
+}
+
 interface ValidatorItem {
   text: TextItem[]
   keyValidatorsFrom?: KeyTextItem[]
@@ -74,7 +94,7 @@ const validatorFunctions: ValidationPrimitivesFunction = {
       !foundItemIsAObject &&
       !searchedItemIsAObject &&
       primitive.isCalculated.value &&
-      Number(searchedItem) > Number(foundItem)
+      getNumber(searchedItem) > getNumber(foundItem)
     )
   },
   isNumber: (searchedItem: any) => {
@@ -82,8 +102,8 @@ const validatorFunctions: ValidationPrimitivesFunction = {
 
     return (
       !searchedItemIsAObject &&
-      !isNaN(searchedItem) &&
-      !isNaN(parseFloat(searchedItem))
+      !isNaN(getNumber(searchedItem)) &&
+      !isNaN(parseFloat(getNumber(searchedItem).toString()))
     )
   },
   isInt: (searchedItem: any) => {
@@ -331,15 +351,26 @@ const validators: Validators = {
         value: 'ALIQUOTA',
         isLike: false,
       },
+      {
+        value: 'tribISSQN',
+        isLike: false,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
+      isNumber: {
+        value: true,
+      },
     },
   },
   issValue: {
     text: [
       {
         value: 'valoriss',
+        isLike: true,
+      },
+      {
+        value: 'VALOR_ISS',
         isLike: true,
       },
       {
@@ -352,6 +383,10 @@ const validators: Validators = {
       },
       {
         value: 'VALOR_ISS_RET',
+        isLike: false,
+      },
+      {
+        value: 'IMPOSTO',
         isLike: false,
       },
     ],
@@ -444,6 +479,16 @@ const validators: Validators = {
       {
         value: 'natOp',
         isLike: false,
+      },
+    ],
+    ignoredKeys: [
+      {
+        value: 'itens',
+        isLike: true,
+      },
+      {
+        value: 'servicos',
+        isLike: true,
       },
     ],
     keyValidators: [
@@ -558,7 +603,7 @@ const findItemByList = (
   validatorsList: KeyTextItem[] = [],
   primitive: ValidationPrimitives = BASE_PRIMITIVES,
   ignoredKeys: KeyTextItem[] = []
-) => {
+): string | undefined => {
   let foundItem: any
 
   const keys = Object.keys(NF)
@@ -721,7 +766,8 @@ function findVal(
         object[k],
         keyObj,
         keyValidator,
-        typeof kValue === 'object'
+        typeof kValue === 'object',
+        ignoredKeys
       )
 
       return value !== undefined
@@ -739,7 +785,7 @@ function findVal(
     }
 
     if (object[k] && typeof object[k] === 'object') {
-      value = findVal(object[k], keyObj, keyValidator, validated)
+      value = findVal(object[k], keyObj, keyValidator, validated, ignoredKeys)
       return value !== undefined
     }
   })
@@ -847,12 +893,13 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       nfs,
       validators.operationNature.text,
       validators.operationNature.keyValidators,
-      validators.operationNature.primitive
+      validators.operationNature.primitive,
+      validators.operationNature.ignoredKeys
     )
 
     const valorLiquidoValidado = !!valorLiquido
       ? valorLiquido
-      : Number(valorNF) - Number(valorIss)
+      : getNumber(valorNF) - getNumber(valorIss)
 
     return {
       cnpjEmit,
