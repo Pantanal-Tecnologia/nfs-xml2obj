@@ -2,11 +2,32 @@ import { V2Response } from 'data-nfs'
 
 import xml2js from 'xml2js'
 
+const getNumber = (item?: any) => {
+  if (typeof item === 'undefined') return 0
+
+  if (typeof item === 'string') {
+    const dotLength = item.split('').filter((i) => i === '.').length
+
+    if (dotLength > 0 && item.indexOf(',') > -1) {
+      const newItem = item.replace('.', '').replace(',', '.')
+
+      return Number(newItem)
+    }
+
+    const newItem = item.replace(',', '.')
+
+    return Number(newItem)
+  }
+
+  return NaN
+}
+
 interface ValidatorItem {
   text: TextItem[]
   keyValidatorsFrom?: KeyTextItem[]
   keyValidatorsTo?: KeyTextItem[]
   keyValidators?: KeyTextItem[]
+  ignoredKeys?: KeyTextItem[]
   primitive: ValidationPrimitives
 }
 
@@ -73,7 +94,7 @@ const validatorFunctions: ValidationPrimitivesFunction = {
       !foundItemIsAObject &&
       !searchedItemIsAObject &&
       primitive.isCalculated.value &&
-      Number(searchedItem) > Number(foundItem)
+      getNumber(searchedItem) > getNumber(foundItem)
     )
   },
   isNumber: (searchedItem: any) => {
@@ -81,8 +102,8 @@ const validatorFunctions: ValidationPrimitivesFunction = {
 
     return (
       !searchedItemIsAObject &&
-      !isNaN(searchedItem) &&
-      !isNaN(parseFloat(searchedItem))
+      !isNaN(getNumber(searchedItem)) &&
+      !isNaN(parseFloat(getNumber(searchedItem).toString()))
     )
   },
   isInt: (searchedItem: any) => {
@@ -101,6 +122,10 @@ const validators: Validators = {
     text: [
       {
         value: 'cnpj',
+        isLike: true,
+      },
+      {
+        value: 'documento',
         isLike: true,
       },
     ],
@@ -158,6 +183,12 @@ const validators: Validators = {
         isLike: false,
       },
     ],
+    ignoredKeys: [
+      {
+        value: 'itens',
+        isLike: true,
+      },
+    ],
     primitive: {
       ...BASE_PRIMITIVES,
       isCalculated: {
@@ -195,6 +226,12 @@ const validators: Validators = {
         isLike: false,
       },
     ],
+    ignoredKeys: [
+      {
+        value: 'itens',
+        isLike: true,
+      },
+    ],
     primitive: {
       ...BASE_PRIMITIVES,
       isCalculated: {
@@ -217,6 +254,12 @@ const validators: Validators = {
       },
       {
         value: 'vLiq',
+        isLike: true,
+      },
+    ],
+    ignoredKeys: [
+      {
+        value: 'itens',
         isLike: true,
       },
     ],
@@ -247,6 +290,33 @@ const validators: Validators = {
       {
         value: 'nNF',
         isLike: true,
+      },
+    ],
+    ignoredKeys: [
+      {
+        value: 'emit',
+        isLike: true,
+        mandatory: true,
+      },
+      {
+        value: 'prest',
+        isLike: true,
+        mandatory: true,
+      },
+      {
+        value: 'toma',
+        isLike: true,
+        mandatory: true,
+      },
+      {
+        value: 'dest',
+        isLike: true,
+        mandatory: true,
+      },
+      {
+        value: 'tom',
+        isLike: true,
+        mandatory: true,
       },
     ],
     primitive: {
@@ -281,15 +351,26 @@ const validators: Validators = {
         value: 'ALIQUOTA',
         isLike: false,
       },
+      {
+        value: 'tribISSQN',
+        isLike: false,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
+      isNumber: {
+        value: true,
+      },
     },
   },
   issValue: {
     text: [
       {
         value: 'valoriss',
+        isLike: true,
+      },
+      {
+        value: 'VALOR_ISS',
         isLike: true,
       },
       {
@@ -302,6 +383,10 @@ const validators: Validators = {
       },
       {
         value: 'VALOR_ISS_RET',
+        isLike: false,
+      },
+      {
+        value: 'IMPOSTO',
         isLike: false,
       },
     ],
@@ -354,6 +439,10 @@ const validators: Validators = {
         value: 'vTotalRet',
         isLike: true,
       },
+      {
+        value: 'valorImposto',
+        isLike: true,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
@@ -390,6 +479,16 @@ const validators: Validators = {
       {
         value: 'natOp',
         isLike: false,
+      },
+    ],
+    ignoredKeys: [
+      {
+        value: 'itens',
+        isLike: true,
+      },
+      {
+        value: 'servicos',
+        isLike: true,
       },
     ],
     keyValidators: [
@@ -451,9 +550,10 @@ const searchItem = (
   item: TextItem,
   validator?: KeyTextItem,
   foundItem?: any,
-  primitive: ValidationPrimitives = BASE_PRIMITIVES
+  primitive: ValidationPrimitives = BASE_PRIMITIVES,
+  ignoredKeys: KeyTextItem[] = []
 ) => {
-  const searchedItem = findItem(NF, item, validator)?.found
+  const searchedItem = findItem(NF, item, validator, ignoredKeys)?.found
 
   const foundItemIsAObject = typeof foundItem === 'object'
   const searchedItemIsAObject = typeof searchedItem === 'object'
@@ -488,7 +588,7 @@ const searchItem = (
 
   if (isValid) {
     const filteredItem = searchedItemIsAObject
-      ? findItem(searchedItem, item)?.found
+      ? findItem(searchedItem, item, undefined, ignoredKeys)?.found
       : searchedItem
 
     return filteredItem
@@ -501,8 +601,9 @@ const findItemByList = (
   NF: any,
   list: TextItem[],
   validatorsList: KeyTextItem[] = [],
-  primitive: ValidationPrimitives = BASE_PRIMITIVES
-) => {
+  primitive: ValidationPrimitives = BASE_PRIMITIVES,
+  ignoredKeys: KeyTextItem[] = []
+): string | undefined => {
   let foundItem: any
 
   const keys = Object.keys(NF)
@@ -521,7 +622,8 @@ const findItemByList = (
               item,
               valid,
               foundItem,
-              primitive
+              primitive,
+              ignoredKeys
             )
 
             if (searchedItem) {
@@ -529,7 +631,14 @@ const findItemByList = (
             }
           })
         } else {
-          const searchedItem = searchItem(NF, item, valid, foundItem, primitive)
+          const searchedItem = searchItem(
+            NF,
+            item,
+            valid,
+            foundItem,
+            primitive,
+            ignoredKeys
+          )
 
           if (searchedItem) {
             foundItem = searchedItem
@@ -551,7 +660,8 @@ const findItemByList = (
       item,
       BASE_TEXT_ITEM,
       foundItem,
-      primitive
+      primitive,
+      ignoredKeys
     )
 
     if (searchedItem) {
@@ -571,7 +681,8 @@ const findItemByList = (
 const findItem = (
   NF: any,
   item: TextItem,
-  keyValidator: TextItem = BASE_TEXT_ITEM
+  keyValidator: TextItem = BASE_TEXT_ITEM,
+  ignoredKeys: KeyTextItem[] = []
 ) => {
   if (keyValidator.value.trim()) {
     const keys = Object.keys(NF)
@@ -586,10 +697,16 @@ const findItem = (
           filtKey.toLowerCase().indexOf(item.value.toLowerCase()) > -1
       )
 
-      const value = findVal(NF, {
-        ...item,
-        value: filteredKeys[keyIndex],
-      })
+      const value = findVal(
+        NF,
+        {
+          ...item,
+          value: filteredKeys[keyIndex],
+        },
+        undefined,
+        undefined,
+        ignoredKeys
+      )
 
       if (value) {
         return {
@@ -602,7 +719,9 @@ const findItem = (
   const value = findVal(
     NF,
     item,
-    keyValidator.value.trim() ? keyValidator : undefined
+    keyValidator.value.trim() ? keyValidator : undefined,
+    undefined,
+    ignoredKeys
   )
 
   if (value) {
@@ -618,10 +737,23 @@ function findVal(
   object: any,
   keyObj: TextItem,
   keyValidator?: TextItem,
-  validated = false
+  validated = false,
+  ignoredKeys: KeyTextItem[] = []
 ) {
   var value: any
   Object.keys(object).some(function (k) {
+    if (keyObj.value === undefined) return false
+
+    if (ignoredKeys.length > 0) {
+      const index = ignoredKeys.findIndex((item) =>
+        item.isLike
+          ? k.toLowerCase().indexOf(item.value.toLowerCase()) > -1
+          : k.toLowerCase() === item.value.toLowerCase()
+      )
+
+      if (index > -1) return false
+    }
+
     if (
       keyValidator &&
       (keyValidator.isLike
@@ -634,7 +766,8 @@ function findVal(
         object[k],
         keyObj,
         keyValidator,
-        typeof kValue === 'object'
+        typeof kValue === 'object',
+        ignoredKeys
       )
 
       return value !== undefined
@@ -652,7 +785,7 @@ function findVal(
     }
 
     if (object[k] && typeof object[k] === 'object') {
-      value = findVal(object[k], keyObj, keyValidator, validated)
+      value = findVal(object[k], keyObj, keyValidator, validated, ignoredKeys)
       return value !== undefined
     }
   })
@@ -707,7 +840,8 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       nfs,
       validators.number.text,
       [],
-      validators.number.primitive
+      validators.number.primitive,
+      validators.number.ignoredKeys
     )
 
     const iss = findItemByList(
@@ -759,10 +893,13 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       nfs,
       validators.operationNature.text,
       validators.operationNature.keyValidators,
-      validators.operationNature.primitive
+      validators.operationNature.primitive,
+      validators.operationNature.ignoredKeys
     )
 
-    const valorLiquidoValidado = !!valorLiquido ? valorLiquido : Number(valorNF) - Number(valorIss)
+    const valorLiquidoValidado = !!valorLiquido
+      ? valorLiquido
+      : getNumber(valorNF) - getNumber(valorIss)
 
     return {
       cnpjEmit,
