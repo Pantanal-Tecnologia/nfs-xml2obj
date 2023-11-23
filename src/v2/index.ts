@@ -823,11 +823,15 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.cpnj.keyValidatorsFrom
     )
 
+    const realCnpjEmit = cnpjEmit ? cnpjEmit.replace(/\D/g, '') : undefined
+
     const cnpjDest = findItemByList(
       nfs,
       validators.cpnj.text,
       validators.cpnj.keyValidatorsTo
     )
+
+    const realCnpjDest = cnpjDest ? cnpjDest.replace(/\D/g, '') : undefined
 
     const valorNF = findItemByList(
       nfs,
@@ -902,8 +906,8 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       : getNumber(valorNF) - getNumber(valorIss)
 
     return {
-      cnpjEmit,
-      cnpjDest,
+      cnpjEmit: realCnpjEmit,
+      cnpjDest: realCnpjDest,
       retencoes,
       valorDeducoes,
       valorIss,
