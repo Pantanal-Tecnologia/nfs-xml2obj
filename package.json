@@ -1,6 +1,6 @@
 {
   "name": "data-nfs",
-  "version": "1.0.21",
+  "version": "1.0.24",
   "description": "",
   "main": "index.js",
   "types": "dist/index.d.ts",
@@ -10,7 +10,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepublish": "tsc",
-    "build": "babel src -d dist"
+    "build": "babel src -d dist",
+    "prepare": "node -p \"'export const LIB_VERSION = ' + JSON.stringify(require('./package.json').version) + ';'\" > src/version.ts && tsc"
   },
   "keywords": [],
   "author": "",

@@ -1,6 +1,7 @@
 import { V2Response } from 'data-nfs'
-
 import xml2js from 'xml2js'
+const LIB_VERSION = require('../version');
+
 
 const getNumber = (item?: any) => {
   if (typeof item === 'undefined') return 0
@@ -794,6 +795,7 @@ function findVal(
 }
 
 const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
+  console.log('running data-nf@' + LIB_VERSION);
   const stripPrefix = xml2js.processors.stripPrefix
   const result: any = await new Promise((resolve, reject) => {
     const parser = new xml2js.Parser({
