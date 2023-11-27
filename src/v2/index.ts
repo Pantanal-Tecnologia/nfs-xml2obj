@@ -443,6 +443,10 @@ const validators: Validators = {
         value: 'valorImposto',
         isLike: true,
       },
+      {
+        value: 'retencao',
+        isLike: true,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
@@ -903,7 +907,10 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
 
     const valorLiquidoValidado = !!valorLiquido
       ? valorLiquido
-      : getNumber(valorNF) - getNumber(valorIss)
+      : getNumber(valorNF) -
+        (getNumber(retencoes) > getNumber(valorIss)
+          ? getNumber(retencoes)
+          : getNumber(valorIss))
 
     return {
       cnpjEmit: realCnpjEmit,
