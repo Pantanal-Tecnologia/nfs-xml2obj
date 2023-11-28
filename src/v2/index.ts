@@ -391,6 +391,10 @@ const validators: Validators = {
         value: 'IMPOSTO',
         isLike: false,
       },
+      {
+        value: 'valorImposto',
+        isLike: false,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
