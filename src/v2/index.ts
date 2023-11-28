@@ -1,4 +1,5 @@
 import { V2Response } from 'data-nfs'
+
 import xml2js from 'xml2js'
 const LIB_VERSION = require('../version');
 
@@ -442,6 +443,10 @@ const validators: Validators = {
       },
       {
         value: 'valorImposto',
+        isLike: true,
+      },
+      {
+        value: 'retencao',
         isLike: true,
       },
     ],
@@ -905,7 +910,10 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
 
     const valorLiquidoValidado = !!valorLiquido
       ? valorLiquido
-      : getNumber(valorNF) - getNumber(valorIss)
+      : getNumber(valorNF) -
+        (getNumber(retencoes) > getNumber(valorIss)
+          ? getNumber(retencoes)
+          : getNumber(valorIss))
 
     return {
       cnpjEmit: realCnpjEmit,
