@@ -388,10 +388,6 @@ const validators: Validators = {
         isLike: false,
       },
       {
-        value: 'IMPOSTO',
-        isLike: false,
-      },
-      {
         value: 'valorImposto',
         isLike: false,
       },
