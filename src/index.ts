@@ -14,6 +14,7 @@ declare module 'data-nfs' {
   interface V2Response {
     cnpjEmit?: string
     cnpjDest?: string
+    cpfEmit?: string
     valorNF?: string
     numero?: string
     iss?: string
