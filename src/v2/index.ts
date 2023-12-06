@@ -891,7 +891,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
     );
 
     const realCnpjDest = cnpjDest ? cnpjDest.replace(/\D/g, "") : undefined;
-    const realCpfDest = cpfEmit ? cpfEmit.replace(/\D/g, "") : undefined;
+    const realCpfEmit = cpfEmit ? cpfEmit.replace(/\D/g, "") : undefined;
     
 
     const valorNF = findItemByList(
@@ -972,7 +972,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
     return {
       cnpjEmit: realCnpjEmit,
       cnpjDest: realCnpjDest,
-      cpfEmit: realCpfDest,
+      cpfEmit: realCpfEmit,
       retencoes,
       valorDeducoes,
       valorIss,
