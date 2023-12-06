@@ -162,6 +162,48 @@ const validators: Validators = {
     ],
     primitive: BASE_PRIMITIVES,
   },
+  cpf: {
+    text: [
+      {
+        value: "cpf",
+        isLike: true,
+      },
+      {
+        value: "documento",
+        isLike: true,
+      },
+    ],
+    keyValidatorsFrom: [
+      {
+        value: "emit",
+        isLike: true,
+        mandatory: true,
+      },
+      {
+        value: "prest",
+        isLike: true,
+        mandatory: true,
+      },
+    ],
+    keyValidatorsTo: [
+      {
+        value: "toma",
+        isLike: true,
+        mandatory: true,
+      },
+      {
+        value: "dest",
+        isLike: true,
+        mandatory: true,
+      },
+      {
+        value: "tom",
+        isLike: true,
+        mandatory: true,
+      },
+    ],
+    primitive: BASE_PRIMITIVES,
+  },
   value: {
     text: [
       {
@@ -838,7 +880,15 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.cpnj.keyValidatorsTo
     )
 
-    const realCnpjDest = cnpjDest ? cnpjDest.replace(/\D/g, '') : undefined
+    const cpfEmit = findItemByList(
+      nfs,
+      validators.cpf.text,
+      validators.cpf.keyValidatorsFrom
+    );
+
+    const realCnpjDest = cnpjDest ? cnpjDest.replace(/\D/g, "") : undefined;
+    const realCpfEmit = cpfEmit ? cpfEmit.replace(/\D/g, "") : undefined;
+    
 
     const valorNF = findItemByList(
       nfs,
@@ -918,6 +968,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
     return {
       cnpjEmit: realCnpjEmit,
       cnpjDest: realCnpjDest,
+      cpfEmit: realCpfEmit,
       retencoes,
       valorDeducoes,
       valorIss,
