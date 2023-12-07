@@ -1,8 +1,7 @@
 import { V2Response } from 'data-nfs'
 
 import xml2js from 'xml2js'
-const LIB_VERSION = require('../version');
-
+const LIB_VERSION = require('../version')
 
 const getNumber = (item?: any) => {
   if (typeof item === 'undefined') return 0
@@ -165,39 +164,39 @@ const validators: Validators = {
   cpf: {
     text: [
       {
-        value: "cpf",
+        value: 'cpf',
         isLike: true,
       },
       {
-        value: "documento",
+        value: 'documento',
         isLike: true,
       },
     ],
     keyValidatorsFrom: [
       {
-        value: "emit",
+        value: 'emit',
         isLike: true,
         mandatory: true,
       },
       {
-        value: "prest",
+        value: 'prest',
         isLike: true,
         mandatory: true,
       },
     ],
     keyValidatorsTo: [
       {
-        value: "toma",
+        value: 'toma',
         isLike: true,
         mandatory: true,
       },
       {
-        value: "dest",
+        value: 'dest',
         isLike: true,
         mandatory: true,
       },
       {
-        value: "tom",
+        value: 'tom',
         isLike: true,
         mandatory: true,
       },
@@ -465,6 +464,10 @@ const validators: Validators = {
       },
       {
         value: 'valorImposto',
+        isLike: false,
+      },
+      {
+        value: 'IMPOSTO',
         isLike: false,
       },
     ],
@@ -876,7 +879,7 @@ function findVal(
 }
 
 const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
-  console.log('running data-nf@' + LIB_VERSION);
+  console.log('running data-nf@' + LIB_VERSION)
   const stripPrefix = xml2js.processors.stripPrefix
   const result: any = await new Promise((resolve, reject) => {
     const parser = new xml2js.Parser({
@@ -918,11 +921,10 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       nfs,
       validators.cpf.text,
       validators.cpf.keyValidatorsFrom
-    );
+    )
 
-    const realCnpjDest = cnpjDest ? cnpjDest.replace(/\D/g, "") : undefined;
-    const realCpfEmit = cpfEmit ? cpfEmit.replace(/\D/g, "") : undefined;
-    
+    const realCnpjDest = cnpjDest ? cnpjDest.replace(/\D/g, '') : undefined
+    const realCpfEmit = cpfEmit ? cpfEmit.replace(/\D/g, '') : undefined
 
     const valorNF = findItemByList(
       nfs,
