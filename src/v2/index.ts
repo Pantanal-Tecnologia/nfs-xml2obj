@@ -387,16 +387,50 @@ const validators: Validators = {
         isLike: false,
       },
       {
-        value: 'pAliqAplic',
+        value: 'Codigo',
         isLike: false,
       },
+    ],
+    ignoredKeys: [
       {
-        value: 'ALIQUOTA',
-        isLike: false,
+        value: 'itens',
+        isLike: true,
       },
       {
-        value: 'tribISSQN',
-        isLike: false,
+        value: 'servicos',
+        isLike: true,
+      },
+      {
+        value: 'emit',
+        isLike: true,
+        mandatory: true,
+      },
+      {
+        value: 'prest',
+        isLike: true,
+        mandatory: true,
+      },
+      {
+        value: 'toma',
+        isLike: true,
+        mandatory: true,
+      },
+      {
+        value: 'dest',
+        isLike: true,
+        mandatory: true,
+      },
+      {
+        value: 'tom',
+        isLike: true,
+        mandatory: true,
+      },
+    ],
+    keyValidators: [
+      {
+        value: 'ExigibilidadeISSQN',
+        isLike: true,
+        mandatory: false,
       },
     ],
     primitive: {
@@ -912,7 +946,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.withheldIss.text,
       [],
       validators.withheldIss.primitive
-    )
+    ) ?? '0'
 
     const valorIss =
       findItemByList(
