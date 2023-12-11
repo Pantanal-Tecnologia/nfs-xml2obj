@@ -1,7 +1,13 @@
 import { V2Response } from 'data-nfs'
-
 import xml2js from 'xml2js'
-const LIB_VERSION = require('../version')
+import {
+  ValidationPrimitives,
+  ValidationPrimitivesFunction,
+  Validators,
+  TextItem,
+  KeyTextItem,
+} from './types'
+const version = require('../version')
 
 const getNumber = (item?: any) => {
   if (typeof item === 'undefined') return 0
@@ -21,48 +27,6 @@ const getNumber = (item?: any) => {
   }
 
   return NaN
-}
-
-interface ValidatorItem {
-  text: TextItem[]
-  keyValidatorsFrom?: KeyTextItem[]
-  keyValidatorsTo?: KeyTextItem[]
-  keyValidators?: KeyTextItem[]
-  ignoredKeys?: KeyTextItem[]
-  primitive: ValidationPrimitives
-}
-
-interface Primitive {
-  value: boolean
-}
-
-interface ValidationPrimitives {
-  isCalculated: Primitive
-  isNumber: Primitive
-  isInt: Primitive
-}
-
-interface ValidationPrimitivesFunction {
-  isCalculated: (
-    foundItem: any,
-    searchedItem: any,
-    primitive: ValidationPrimitives
-  ) => boolean
-  isNumber: (searchedItem: any) => boolean
-  isInt: (searchedItem: any) => boolean
-}
-
-interface TextItem {
-  value: string
-  isLike: boolean
-}
-
-interface KeyTextItem extends TextItem {
-  mandatory?: boolean
-}
-
-interface Validators {
-  [key: string]: ValidatorItem
 }
 
 const BASE_PRIMITIVES: ValidationPrimitives = {
@@ -879,7 +843,7 @@ function findVal(
 }
 
 const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
-  console.log('running data-nf@' + LIB_VERSION)
+  console.log('running data-nf@' + version.LIB_VERSION)
   const stripPrefix = xml2js.processors.stripPrefix
   const result: any = await new Promise((resolve, reject) => {
     const parser = new xml2js.Parser({
@@ -941,12 +905,13 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.number.ignoredKeys
     )
 
-    const iss = findItemByList(
-      nfs,
-      validators.withheldIss.text,
-      [],
-      validators.withheldIss.primitive
-    ) ?? '0'
+    const iss =
+      findItemByList(
+        nfs,
+        validators.withheldIss.text,
+        [],
+        validators.withheldIss.primitive
+      ) ?? '0'
 
     const valorIss =
       findItemByList(

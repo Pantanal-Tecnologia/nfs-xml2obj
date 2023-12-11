@@ -1,8 +1,3 @@
-// const getDataNFSLegado = require('./legado').default
-const getDataNFSv2 = require('./v2').default
-
-module.exports = {getDataNFSv2 }
-
 declare module 'data-nfs' {
   interface LegacyResponse {
     cnpjEmit: string | boolean
@@ -27,3 +22,7 @@ declare module 'data-nfs' {
   }
   export const getDataNFSv2: (xml: string) => Promise<V2Response>
 }
+
+const getDataNFSv2 = require('./v2').default
+
+module.exports = { getDataNFSv2 }
