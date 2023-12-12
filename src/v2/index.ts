@@ -400,7 +400,7 @@ const validators: Validators = {
     primitive: {
       ...BASE_PRIMITIVES,
       isNumber: {
-        value: true,
+        value: false,
       },
     },
   },
