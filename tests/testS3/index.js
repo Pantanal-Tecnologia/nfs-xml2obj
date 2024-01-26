@@ -63,4 +63,39 @@ const runTest = async (filename, content) => {
   // })
 }
 
-readFiles('./temp/', runTest, console.log)
+const runTestS3 = async () => {
+  s3Keys.forEach(async (item, index, array) => {
+    try {
+      const element = item
+      console.log(
+        `(${item}) ##################################################################`
+      )
+      console.log('Baixando')
+      const file = await getFile(element)
+
+      console.log(file)
+
+      const xmlString = fs.readFileSync(file)
+      const b2 = new Date().getTime()
+      const dadoV2 = await dataNfs.getDataNFSv2(xmlString)
+      const b3 = new Date().getTime()
+
+      console.log('Retorno V2 : ')
+      console.log(dadoV2)
+      console.log('TIME: ' + (b3 - b2) + 'ms')
+
+      console.log(`${index + 1}/${array.length}`)
+
+      // if (dadoV2.naturezaOperacao) {
+      //   fs.unlink(file, (err) => {
+      //     if (err) throw err
+      //   })
+      // }
+    } catch (err) {
+      console.log(err)
+    }
+  })
+}
+
+// readFiles('./temp/', runTest, console.log)
+// runTestS3()

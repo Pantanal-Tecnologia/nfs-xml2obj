@@ -961,10 +961,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
 
     const valorLiquidoValidado = !!valorLiquido
       ? valorLiquido
-      : getNumber(valorNF) -
-        (getNumber(retencoes) > getNumber(valorIss)
-          ? getNumber(retencoes)
-          : getNumber(valorIss))
+      : getNumber(valorNF) - getNumber(retencoes)
 
     return {
       cnpjEmit: realCnpjEmit,

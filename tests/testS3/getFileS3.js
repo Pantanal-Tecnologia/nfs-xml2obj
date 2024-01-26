@@ -31,22 +31,6 @@ async function getFileStream(fileKey) {
     Key: fileKey,
   }
   const result = await new Promise(async (resolve, reject) => {
-    // ###V2
-    // s3.headObject(downloadParams, function (err, metadata) {
-    //   if (err && err.code === 'NotFound') {
-    //     resolve([false, `fileKey ${fileKey} NotFound`])
-    //   }
-    //   const file = fs.createWriteStream(`temp/${fileKey}.xml`);
-    //   file.on('close', function(){
-    //     console.log('close')
-    //       resolve(file)
-    //   });
-    //   console.log(file.path)
-
-    //   const res = s3.getObject(downloadParams).createReadStream().then(res => console.log(res)) //.pipe(file)
-
-    // });
-
     // ###############V3
     const filePath = `temp/${fileKey}.xml`
     const command = new GetObjectCommand(downloadParams)
