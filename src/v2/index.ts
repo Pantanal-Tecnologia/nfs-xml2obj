@@ -105,6 +105,11 @@ const validators: Validators = {
         isLike: true,
         mandatory: true,
       },
+      {
+        value: 'pre',
+        isLike: true,
+        mandatory: true,
+      },
     ],
     keyValidatorsTo: [
       {
@@ -144,6 +149,11 @@ const validators: Validators = {
       },
       {
         value: 'prest',
+        isLike: true,
+        mandatory: true,
+      },
+      {
+        value: 'pre',
         isLike: true,
         mandatory: true,
       },
@@ -189,6 +199,10 @@ const validators: Validators = {
         value: 'VALOR_SERVICO',
         isLike: false,
       },
+      {
+        value: 'VlBasCalc',
+        isLike: false,
+      },     
     ],
     ignoredKeys: [
       {
@@ -230,6 +244,10 @@ const validators: Validators = {
       },
       {
         value: 'VALOR_NOTA',
+        isLike: false,
+      },
+      {
+        value: 'ValorNFS',
         isLike: false,
       },
     ],
@@ -291,13 +309,17 @@ const validators: Validators = {
         isLike: false,
       },
       {
+        value: 'NumNF',
+        isLike: false,
+      },
+      {
         value: 'cod',
         isLike: true,
       },
       {
         value: 'nNF',
         isLike: true,
-      },
+      }      
     ],
     ignoredKeys: [
       {
@@ -328,12 +350,6 @@ const validators: Validators = {
     ],
     primitive: {
       ...BASE_PRIMITIVES,
-      // isNumber: {
-      //   value: true,
-      // },
-      // isInt: {
-      //   value: true,
-      // },
     },
   },
   withheldIss: {
@@ -352,6 +368,10 @@ const validators: Validators = {
       },
       {
         value: 'Codigo',
+        isLike: false,
+      },
+      {
+        value: 'ValorIssRet',
         isLike: false,
       },
     ],
@@ -555,6 +575,26 @@ const validators: Validators = {
       ...BASE_PRIMITIVES,
     },
   },
+  cnpjPrest: {
+    text: [
+      {
+        value: 'CpfCnpjPre',
+        isLike: false,
+        notValidated: true,
+      },      
+    ],
+    primitive: BASE_PRIMITIVES,
+  },
+  cnpjToma: {
+    text: [
+      {
+        value: 'CpfCnpjTom',
+        isLike: false,
+        notValidated: true,
+      },      
+    ],
+    primitive: BASE_PRIMITIVES,
+  }
 }
 
 const findNf = (ND: any): any => {
@@ -662,7 +702,7 @@ const findItemByList = (
   const keys = Object.keys(NF)
 
   list.forEach((item) => {
-    if (validatorsList.length > 0) {
+    if (validatorsList.length > 0 && !item.notValidated) {
       let shouldReturn = false
 
       validatorsList.forEach((valid) => {
@@ -871,26 +911,38 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
   try {
     const nfs = findNf(result)
 
-    const cnpjEmit = findItemByList(
+    const cnpjEmitWithValidator = findItemByList(
       nfs,
       validators.cpnj.text,
       validators.cpnj.keyValidatorsFrom
     )
 
-    const realCnpjEmit = cnpjEmit ? cnpjEmit.replace(/\D/g, '') : undefined
+    const cnpjPrest = findItemByList(
+      nfs,
+      validators.cnpjPrest.text,
+    )
 
-    const cnpjDest = findItemByList(
+    const cnpjToma = findItemByList(
+      nfs,
+      validators.cnpjToma.text,
+    )
+
+    
+    const cnpjDestWithValidator = findItemByList(
       nfs,
       validators.cpnj.text,
       validators.cpnj.keyValidatorsTo
-    )
+      )
+      
+      const cpfEmit = findItemByList(
+        nfs,
+        validators.cpf.text,
+        validators.cpf.keyValidatorsFrom
+        )
 
-    const cpfEmit = findItemByList(
-      nfs,
-      validators.cpf.text,
-      validators.cpf.keyValidatorsFrom
-    )
-
+    const cnpjEmit = cnpjEmitWithValidator ? cnpjEmitWithValidator : cnpjPrest ? cnpjPrest : undefined;
+    const cnpjDest = cnpjDestWithValidator ? cnpjDestWithValidator : cnpjToma ? cnpjToma : undefined;
+    const realCnpjEmit = cnpjEmit ? cnpjEmit.replace(/\D/g, '') : undefined
     const realCnpjDest = cnpjDest ? cnpjDest.replace(/\D/g, '') : undefined
     const realCpfEmit = cpfEmit ? cpfEmit.replace(/\D/g, '') : undefined
 

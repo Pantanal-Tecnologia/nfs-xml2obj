@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><ConsultarNfseRpsResposta xmlns="http://www.abrasf.org.br/nfse.xsd">
+	<CompNfse>
+		<Nfse versao="2.02">
+			<InfNfse Id="NFSE_18154">
+				<Numero>18154</Numero>
+				<CodigoVerificacao>8KQGJSHUK</CodigoVerificacao>
+				<DataEmissao>2023-11-17T15:34:14</DataEmissao>
+				<NfseSubstituida>0</NfseSubstituida>
+				<OutrasInformacoes/>
+				<ValoresNfse>
+					<BaseCalculo>350.00</BaseCalculo>
+					<Aliquota>5.00</Aliquota>
+					<ValorIss>17.50</ValorIss>
+					<ValorLiquidoNfse>350.00</ValorLiquidoNfse>
+				</ValoresNfse>
+				<ValorCredito>0.00</ValorCredito>
+				<PrestadorServico>
+					<IdentificacaoPrestador>
+						<CpfCnpj>
+							<Cpf>79135951168</Cpf>
+						</CpfCnpj>
+						<InscricaoMunicipal/>
+					</IdentificacaoPrestador>
+					<RazaoSocial>GERONeSIO ANDRADE</RazaoSocial>
+					
+					<Endereco>
+						<Endereco>BRASILIA</Endereco>
+						
+						
+						<Bairro/>
+						<CodigoMunicipio>5100409</CodigoMunicipio>
+						<Uf>MT</Uf>
+						<CodigoPais>1058</CodigoPais>
+						<Cep>78770000</Cep>
+					</Endereco>
+					<Contato>
+						<Email>genesioandrade375@gmail.com</Email>
+					</Contato>
+				</PrestadorServico>
+				<OrgaoGerador>
+					<CodigoMunicipio>5100409</CodigoMunicipio>
+					<Uf>MT</Uf>
+				</OrgaoGerador>
+				<DeclaracaoPrestacaoServico>
+					<InfDeclaracaoPrestacaoServico>
+						<Competencia>2023-11-17</Competencia>
+						<OutrasInformacoes/>
+						<Servico>
+							<Valores>
+								<ValorServicos>350.00</ValorServicos>
+								<ValorDeducoes>0.00</ValorDeducoes>
+								<ValorPis>0.00</ValorPis>
+								<ValorCofins>0.00</ValorCofins>
+								<ValorInss>0.00</ValorInss>
+								<ValorIr>0.00</ValorIr>
+								<ValorCsll>0.00</ValorCsll>
+								<OutrasRetencoes>0.00</OutrasRetencoes>
+								<ValorIss>17.50</ValorIss>
+								<Aliquota>5.00</Aliquota>
+								<DescontoIncondicionado>0.00</DescontoIncondicionado>
+								<DescontoCondicionado>0.00</DescontoCondicionado>
+							</Valores>
+							<IssRetido>2</IssRetido>
+							<ResponsavelRetencao>1</ResponsavelRetencao>
+							<ItemListaServico/>
+							<CodigoCnae>0</CodigoCnae>
+							<CodigoTributacaoMunicipio/>
+							<Discriminacao>ORcAMENTO  179486 , PLACA 41775, CASE, MOTO NIVELADORA CASE 845B, SERVIcOS DE REVISaO E LIMPEZA RADIADOR/INTERCULER.</Discriminacao>
+							<CodigoMunicipio>5100409</CodigoMunicipio>
+							<CodigoPais>1058</CodigoPais>
+							<ExigibilidadeISS>1</ExigibilidadeISS>
+							<MunicipioIncidencia>5100409</MunicipioIncidencia>
+						</Servico>
+						<Prestador>
+							<CpfCnpj>
+								<Cpf>79135951168</Cpf>
+							</CpfCnpj>
+							<InscricaoMunicipal/>
+						</Prestador>
+						<Tomador>
+							<IdentificacaoTomador>
+								<CpfCnpj>
+									<Cnpj>05870713000120</Cnpj>
+								</CpfCnpj>
+								<InscricaoMunicipal/>
+							</IdentificacaoTomador>
+							<RazaoSocial>SAGA COMERCIO E SERVICO TECNOLOGIA E INFORMATICA LTDA</RazaoSocial>
+							<Endereco>
+								<Endereco>RUA ORIENTE TENUTA</Endereco>
+								<Numero>9</Numero>
+								<Complemento>RUA ORIENTE TENUTA, No 9, ALVORADA,  - MT</Complemento>
+								<Bairro>ALVORADA</Bairro>
+								<CodigoMunicipio>566</CodigoMunicipio>
+								<Uf>MT</Uf>
+								<CodigoPais>1058</CodigoPais>
+								<Cep>78048450</Cep>
+							</Endereco>
+							<Contato>
+								<Email>leandrociqueira_ag@hotmail.com</Email>
+							</Contato>
+						</Tomador>
+						<RegimeEspecialTributacao>*</RegimeEspecialTributacao>
+						<OptanteSimplesNacional>0</OptanteSimplesNacional>
+						<IncentivoFiscal>2</IncentivoFiscal>
+					</InfDeclaracaoPrestacaoServico>
+				</DeclaracaoPrestacaoServico>
+				<tsStatusRps>2</tsStatusRps>
+				<tsStatusNfse>1</tsStatusNfse>
+			</InfNfse>
+		</Nfse>
+	</CompNfse>
+</ConsultarNfseRpsResposta>

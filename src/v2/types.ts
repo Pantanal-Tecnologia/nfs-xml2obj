@@ -30,6 +30,7 @@ export interface ValidationPrimitivesFunction {
 export interface TextItem {
   value: string
   isLike: boolean
+  notValidated?: boolean
 }
 
 export interface KeyTextItem extends TextItem {
