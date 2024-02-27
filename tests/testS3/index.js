@@ -97,5 +97,5 @@ const runTestS3 = async () => {
   })
 }
 
-// readFiles('./temp/', runTest, console.log)
+readFiles('./temp/', runTest, console.log)
 // runTestS3()

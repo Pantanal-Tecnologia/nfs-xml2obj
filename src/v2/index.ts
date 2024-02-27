@@ -492,6 +492,10 @@ const validators: Validators = {
         value: 'retencao',
         isLike: true,
       },
+      {
+        value: 'VALOR_IR',
+        isLike: false,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
