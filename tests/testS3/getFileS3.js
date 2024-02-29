@@ -9,11 +9,13 @@ const bucketName = String(process.env.AWS_BUCKET_NAME)
 const region = process.env.AWS_BUCKET_REGION
 const accessKeyId = process.env.AWS_ACCESS_KEY
 const secretAccessKey = process.env.AWS_SECRET_KEY
+
 // const credentials_v2 = {
 //   region,
 //   accessKeyId,
 //   secretAccessKey
 // }
+
 const credentials_v3 = {
   region,
   credentials: {
@@ -21,17 +23,15 @@ const credentials_v3 = {
     secretAccessKey,
   },
 }
-// const s3 = new S3(credentials_v3)
+
 const client = new S3Client(credentials_v3)
 
-// downloads a file from s3
 async function getFileStream(fileKey) {
   const downloadParams = {
     Bucket: bucketName,
     Key: fileKey,
   }
   const result = await new Promise(async (resolve, reject) => {
-    // ###############V3
     const filePath = `temp/${fileKey}.xml`
     const command = new GetObjectCommand(downloadParams)
     const response = await client.send(command)
