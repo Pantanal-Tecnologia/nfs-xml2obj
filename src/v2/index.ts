@@ -353,7 +353,7 @@ const validators: Validators = {
     },
   },
   withheldIss: {
-    text: [
+    text: [    
       {
         value: 'issretido',
         isLike: true,
@@ -365,6 +365,10 @@ const validators: Validators = {
       {
         value: 'retido',
         isLike: false,
+      },
+      {
+        value: 'RETIDO',
+        isLike: true,
       },
       {
         value: 'Codigo',
@@ -420,7 +424,7 @@ const validators: Validators = {
     primitive: {
       ...BASE_PRIMITIVES,
       isNumber: {
-        value: true,
+        value: false,
       },
     },
   },
@@ -698,9 +702,7 @@ const findItemByList = (
   ignoredKeys: KeyTextItem[] = []
 ): string | undefined => {
   let foundItem: any
-
   const keys = Object.keys(NF)
-
   list.forEach((item) => {
     if (validatorsList.length > 0 && !item.notValidated) {
       let shouldReturn = false
@@ -724,6 +726,7 @@ const findItemByList = (
             }
           })
         } else {
+
           const searchedItem = searchItem(
             NF,
             item,
