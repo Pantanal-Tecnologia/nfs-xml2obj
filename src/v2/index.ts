@@ -202,6 +202,10 @@ const validators: Validators = {
       {
         value: 'VlBasCalc',
         isLike: false,
+      },
+      {
+        value: 'VALOR_TOTAL',
+        isLike: false,
       },     
     ],
     ignoredKeys: [
@@ -244,6 +248,10 @@ const validators: Validators = {
       },
       {
         value: 'VALOR_NOTA',
+        isLike: false,
+      },
+      {
+        value: 'VALOR_TOTAL',
         isLike: false,
       },
       {
