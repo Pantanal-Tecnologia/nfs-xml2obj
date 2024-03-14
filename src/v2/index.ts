@@ -206,12 +206,20 @@ const validators: Validators = {
       {
         value: 'VALOR_TOTAL',
         isLike: false,
-      },     
+      },
+      {
+        value: 'VALORTOTALNOTAFISCAL',
+        isLike: false,
+      },
     ],
     ignoredKeys: [
       {
         value: 'itens',
         isLike: true,
+      },
+      {
+        value: 'ITENSNOTA',
+        isLike: false,
       },
     ],
     primitive: {
@@ -258,11 +266,19 @@ const validators: Validators = {
         value: 'ValorNFS',
         isLike: false,
       },
+      {
+        value: 'VALORTOTALNOTAFISCAL',
+        isLike: false,
+      },
     ],
     ignoredKeys: [
       {
         value: 'itens',
         isLike: true,
+      },
+      {
+        value: 'ITENSNOTA',
+        isLike: false,
       },
     ],
     primitive: {
@@ -294,6 +310,10 @@ const validators: Validators = {
       {
         value: 'itens',
         isLike: true,
+      },
+      {
+        value: 'ITENSNOTA',
+        isLike: false,
       },
     ],
     primitive: {
@@ -327,7 +347,11 @@ const validators: Validators = {
       {
         value: 'nNF',
         isLike: true,
-      }      
+      },
+      {
+        value: 'NOTAFISCALNUMERO',
+        isLike: false,
+      },
     ],
     ignoredKeys: [
       {
@@ -361,7 +385,7 @@ const validators: Validators = {
     },
   },
   withheldIss: {
-    text: [    
+    text: [
       {
         value: 'issretido',
         isLike: true,
@@ -421,6 +445,10 @@ const validators: Validators = {
         isLike: true,
         mandatory: true,
       },
+      {
+        value: 'ITENSNOTA',
+        isLike: false,
+      },
     ],
     keyValidators: [
       {
@@ -464,6 +492,16 @@ const validators: Validators = {
       },
       {
         value: 'IMPOSTO',
+        isLike: false,
+      },
+      {
+        value: 'VALORTOTALISSQDEVIDO',
+        isLike: false,
+      },
+    ],
+    ignoredKeys: [
+      {
+        value: 'ITENSNOTA',
         isLike: false,
       },
     ],
@@ -593,7 +631,7 @@ const validators: Validators = {
         value: 'CpfCnpjPre',
         isLike: false,
         notValidated: true,
-      },      
+      },
     ],
     primitive: BASE_PRIMITIVES,
   },
@@ -603,10 +641,10 @@ const validators: Validators = {
         value: 'CpfCnpjTom',
         isLike: false,
         notValidated: true,
-      },      
+      },
     ],
     primitive: BASE_PRIMITIVES,
-  }
+  },
 }
 
 const findNf = (ND: any): any => {
@@ -734,7 +772,6 @@ const findItemByList = (
             }
           })
         } else {
-
           const searchedItem = searchItem(
             NF,
             item,
@@ -928,31 +965,32 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.cpnj.keyValidatorsFrom
     )
 
-    const cnpjPrest = findItemByList(
-      nfs,
-      validators.cnpjPrest.text,
-    )
+    const cnpjPrest = findItemByList(nfs, validators.cnpjPrest.text)
 
-    const cnpjToma = findItemByList(
-      nfs,
-      validators.cnpjToma.text,
-    )
+    const cnpjToma = findItemByList(nfs, validators.cnpjToma.text)
 
-    
     const cnpjDestWithValidator = findItemByList(
       nfs,
       validators.cpnj.text,
       validators.cpnj.keyValidatorsTo
-      )
-      
-      const cpfEmit = findItemByList(
-        nfs,
-        validators.cpf.text,
-        validators.cpf.keyValidatorsFrom
-        )
+    )
 
-    const cnpjEmit = cnpjEmitWithValidator ? cnpjEmitWithValidator : cnpjPrest ? cnpjPrest : undefined;
-    const cnpjDest = cnpjDestWithValidator ? cnpjDestWithValidator : cnpjToma ? cnpjToma : undefined;
+    const cpfEmit = findItemByList(
+      nfs,
+      validators.cpf.text,
+      validators.cpf.keyValidatorsFrom
+    )
+
+    const cnpjEmit = cnpjEmitWithValidator
+      ? cnpjEmitWithValidator
+      : cnpjPrest
+      ? cnpjPrest
+      : undefined
+    const cnpjDest = cnpjDestWithValidator
+      ? cnpjDestWithValidator
+      : cnpjToma
+      ? cnpjToma
+      : undefined
     const realCnpjEmit = cnpjEmit ? cnpjEmit.replace(/\D/g, '') : undefined
     const realCnpjDest = cnpjDest ? cnpjDest.replace(/\D/g, '') : undefined
     const realCpfEmit = cpfEmit ? cpfEmit.replace(/\D/g, '') : undefined
@@ -977,7 +1015,8 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
         nfs,
         validators.withheldIss.text,
         [],
-        validators.withheldIss.primitive
+        validators.withheldIss.primitive,
+        validators.withheldIss.ignoredKeys
       ) ?? '0'
 
     const valorIss =
@@ -985,21 +1024,24 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
         nfs,
         validators.issValue.text,
         [],
-        validators.issValue.primitive
+        validators.issValue.primitive,
+        validators.issValue.ignoredKeys
       ) ?? '0'
 
     const valorBruto = findItemByList(
       nfs,
       validators.grossValue.text,
       [],
-      validators.grossValue.primitive
+      validators.grossValue.primitive,
+      validators.grossValue.ignoredKeys
     )
 
     const valorLiquido = findItemByList(
       nfs,
       validators.liquidValue.text,
       [],
-      validators.liquidValue.primitive
+      validators.liquidValue.primitive,
+      validators.liquidValue.ignoredKeys
     )
 
     const valorDeducoes =
@@ -1025,6 +1067,10 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.operationNature.primitive,
       validators.operationNature.ignoredKeys
     )
+
+    console.log({
+      valorLiquido
+    })
 
     const valorLiquidoValidado = !!valorLiquido
       ? valorLiquido
