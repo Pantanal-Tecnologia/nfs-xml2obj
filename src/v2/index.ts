@@ -426,7 +426,7 @@ const validators: Validators = {
         mandatory: true,
       },
       {
-        value: 'prest',
+        value: 'prestador',
         isLike: true,
         mandatory: true,
       },
@@ -644,6 +644,33 @@ const validators: Validators = {
       },
     ],
     primitive: BASE_PRIMITIVES,
+  },
+  discount: {
+    text: [
+      {
+        value: 'Desconto',
+        isLike: true,
+      },
+    ],
+    ignoredKeys: [
+      {
+        value: 'itens',
+        isLike: true,
+      },
+      {
+        value: 'ITENSNOTA',
+        isLike: false,
+      },
+    ],
+    primitive: {
+      ...BASE_PRIMITIVES,
+      isCalculated: {
+        value: true,
+      },
+      isNumber: {
+        value: true,
+      },
+    },
   },
 }
 
@@ -1060,6 +1087,14 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
         validators.retentions.primitive
       ) ?? '0'
 
+    const descontos = findItemByList(
+      nfs,
+      validators.discount.text,
+      [],
+      validators.discount.primitive,
+      validators.discount.ignoredKeys
+    )
+
     const naturezaOperacao = findItemByList(
       nfs,
       validators.operationNature.text,
@@ -1068,13 +1103,15 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.operationNature.ignoredKeys
     )
 
-    console.log({
-      valorLiquido
-    })
-
     const valorLiquidoValidado = !!valorLiquido
       ? valorLiquido
       : getNumber(valorNF) - getNumber(retencoes)
+
+    const valorBrutoValidado = descontos
+      ? getNumber(valorBruto) - getNumber(descontos) >= getNumber(valorLiquido)
+        ? getNumber(valorBruto) - getNumber(descontos)
+        : getNumber(valorBruto)
+      : getNumber(valorBruto)
 
     return {
       cnpjEmit: realCnpjEmit,
@@ -1083,9 +1120,10 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       retencoes,
       valorDeducoes,
       valorIss,
-      valorBruto,
+      valorBruto: String(valorBrutoValidado),
       valorLiquido: String(valorLiquidoValidado),
       valorNF,
+      descontos,
       iss,
       numero,
       naturezaOperacao,
