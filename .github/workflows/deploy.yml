@@ -1,9 +1,9 @@
-ame: Publish to NPM
+name: Publish to NPM
 
 on:
   push:
     branches:
-      - main # Ramo que dispara a publicação
+      - master
 
 jobs:
   build_and_publish:
