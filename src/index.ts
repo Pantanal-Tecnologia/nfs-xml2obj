@@ -15,6 +15,7 @@ declare module 'data-nfs' {
     iss?: string
     valorIss: string
     valorBruto?: string
+    inss?: string
     valorLiquido?: string
     descontos?: string
     valorDeducoes: string
