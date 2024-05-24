@@ -516,6 +516,47 @@ const validators: Validators = {
       }
     }
   },
+  inssValue: {
+    text: [
+      {
+        value: 'inss',
+        isLike: true,
+      },
+      {
+        value: 'INSS',
+        isLike: true,
+      },
+      {
+        value: 'INSSRetido',
+        isLike: true,
+      },
+      {
+        value: 'vINSS',
+        isLike: false,
+      },
+      {
+        value: 'ValorINSS',
+        isLike: false,
+      },
+      {
+        value: 'ValorINSSRetido',
+        isLike: false,
+      },
+      {
+        value: 'VALOR_INSS',
+        isLike: false,
+      },
+    ],
+    primitive: {
+      ...BASE_PRIMITIVES,
+      isNumber: {
+        value: true,
+      },
+      isCalculated: {
+        value: false,
+      },
+    },
+  },
   deductionValue: {
     text: [
       {
@@ -1104,6 +1145,15 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.operationNature.ignoredKeys
     )
     
+    const inssValue = findItemByList(
+      nfs,
+      validators.inssValue.text,
+      [],
+      validators.inssValue.primitive,
+      validators.inssValue.ignoredKeys
+    )
+    
+    
     const valorLiquidoValidado = !!valorLiquido
       ? valorLiquido
       : getNumber(valorNF) - getNumber(retencoes)
@@ -1124,6 +1174,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       valorBruto: String(valorBrutoValidado),
       valorLiquido: String(valorLiquidoValidado),
       valorNF,
+      inss: inssValue,
       descontos,
       iss,
       numero,
