@@ -491,6 +491,10 @@ const validators: Validators = {
                 value: 'ValorINSSRetido',
                 isLike: false,
             },
+            {
+                value: 'VALOR_INSS',
+                isLike: false,
+            },
         ],
         primitive: {
             ...BASE_PRIMITIVES,
