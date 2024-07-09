@@ -607,6 +607,10 @@ const validators: Validators = {
       {
         value: 'VALOR_IR',
         isLike: false
+      },
+      {
+        value: 'ValorIr',
+        isLike: false
       }
     ],
     primitive: {
