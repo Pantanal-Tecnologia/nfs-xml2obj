@@ -270,6 +270,10 @@ const validators: Validators = {
       {
         value: 'VALORTOTALNOTAFISCAL',
         isLike: false
+      },
+      {
+        value: 'VALORTOTALBASEISSQN',
+        isLike: false
       }
     ],
     ignoredKeys: [
@@ -305,6 +309,10 @@ const validators: Validators = {
       {
         value: 'vLiq',
         isLike: true
+      },
+      {
+        value: 'VALORTOTALNOTAFISCAL',
+        isLike: false
       }
     ],
     ignoredKeys: [
@@ -496,7 +504,7 @@ const validators: Validators = {
         isLike: false
       },
       {
-        value: 'VALORTOTALISSQDEVIDO',
+        value: 'VALORTOTALISSQRETIDO',
         isLike: false
       }
     ],
