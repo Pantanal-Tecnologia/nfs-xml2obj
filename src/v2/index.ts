@@ -93,6 +93,10 @@ const validators: Validators = {
       {
         value: 'documento',
         isLike: true
+      },
+      {
+        value: 'CPF',
+        isLike: false
       }
     ],
     keyValidatorsFrom: [
@@ -360,7 +364,11 @@ const validators: Validators = {
       {
         value: 'NOTAFISCALNUMERO',
         isLike: false
-      }
+      },
+      {
+        value: 'NumeroNFe',
+        isLike: false
+      },
     ],
     ignoredKeys: [
       {
@@ -390,7 +398,10 @@ const validators: Validators = {
       }
     ],
     primitive: {
-      ...BASE_PRIMITIVES
+      ...BASE_PRIMITIVES,
+      isNumber: {
+        value: true
+      }
     }
   },
   withheldIss: {
@@ -505,6 +516,10 @@ const validators: Validators = {
       },
       {
         value: 'VALORTOTALISSQRETIDO',
+        isLike: false
+      },
+      {
+        value: 'ValorIssRetido',
         isLike: false
       }
     ],
