@@ -1,6 +1,6 @@
 {
   "name": "data-nfs",
-  "version": "1.0.43",
+  "version": "1.0.44",
   "description": "",
   "main": "index.js",
   "types": "dist/index.d.ts",

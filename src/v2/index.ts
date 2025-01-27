@@ -5,46 +5,46 @@ import {
   ValidationPrimitivesFunction,
   Validators,
   TextItem,
-  KeyTextItem
+  KeyTextItem,
 } from './types'
 
 const version = require('../version')
 
 const getNumber = (item?: any) => {
   if (typeof item === 'undefined') return 0
-  
+
   if (typeof item === 'string') {
     const dotLength = item.split('').filter((i) => i === '.').length
-    
+
     if (dotLength > 0 && item.indexOf(',') > -1) {
       const newItem = item.replace('.', '').replace(',', '.')
-      
+
       return Number(newItem)
     }
-    
+
     const newItem = item.replace(',', '.')
-    
+
     return Number(newItem)
   }
-  
+
   return NaN
 }
 
 const BASE_PRIMITIVES: ValidationPrimitives = {
   isCalculated: {
-    value: false
+    value: false,
   },
   isNumber: {
-    value: false
+    value: false,
   },
   isInt: {
-    value: false
-  }
+    value: false,
+  },
 }
 
 const BASE_TEXT_ITEM: TextItem = {
   value: '',
-  isLike: true
+  isLike: true,
 }
 
 const validatorFunctions: ValidationPrimitivesFunction = {
@@ -55,7 +55,7 @@ const validatorFunctions: ValidationPrimitivesFunction = {
   ) => {
     const foundItemIsAObject = typeof foundItem === 'object'
     const searchedItemIsAObject = typeof searchedItem === 'object'
-    
+
     return (
       !foundItemIsAObject &&
       !searchedItemIsAObject &&
@@ -65,7 +65,7 @@ const validatorFunctions: ValidationPrimitivesFunction = {
   },
   isNumber: (searchedItem: any) => {
     const searchedItemIsAObject = typeof searchedItem === 'object'
-    
+
     return (
       !searchedItemIsAObject &&
       !isNaN(getNumber(searchedItem)) &&
@@ -74,13 +74,13 @@ const validatorFunctions: ValidationPrimitivesFunction = {
   },
   isInt: (searchedItem: any) => {
     const searchedItemIsAObject = typeof searchedItem === 'object'
-    
+
     return (
       !searchedItemIsAObject &&
       Number.isInteger(Number(searchedItem)) &&
       searchedItem?.length === String(Number(searchedItem)).length
     )
-  }
+  },
 }
 
 const validators: Validators = {
@@ -88,456 +88,468 @@ const validators: Validators = {
     text: [
       {
         value: 'cnpj',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'documento',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'CPF',
-        isLike: false
-      }
+        isLike: false,
+      },
     ],
     keyValidatorsFrom: [
       {
         value: 'emit',
         isLike: true,
-        mandatory: true
+        mandatory: true,
       },
       {
         value: 'prest',
         isLike: true,
-        mandatory: true
+        mandatory: true,
       },
       {
         value: 'pre',
         isLike: true,
-        mandatory: true
-      }
+        mandatory: true,
+      },
     ],
     keyValidatorsTo: [
       {
         value: 'toma',
         isLike: true,
-        mandatory: true
+        mandatory: true,
       },
       {
         value: 'dest',
         isLike: true,
-        mandatory: true
+        mandatory: true,
       },
       {
         value: 'tom',
         isLike: true,
-        mandatory: true
-      }
+        mandatory: true,
+      },
     ],
-    primitive: BASE_PRIMITIVES
+    primitive: BASE_PRIMITIVES,
   },
   cpf: {
     text: [
       {
         value: 'cpf',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'documento',
-        isLike: true
-      }
+        isLike: true,
+      },
     ],
     keyValidatorsFrom: [
       {
         value: 'emit',
         isLike: true,
-        mandatory: true
+        mandatory: true,
       },
       {
         value: 'prest',
         isLike: true,
-        mandatory: true
+        mandatory: true,
       },
       {
         value: 'pre',
         isLike: true,
-        mandatory: true
-      }
+        mandatory: true,
+      },
     ],
     keyValidatorsTo: [
       {
         value: 'toma',
         isLike: true,
-        mandatory: true
+        mandatory: true,
       },
       {
         value: 'dest',
         isLike: true,
-        mandatory: true
+        mandatory: true,
       },
       {
         value: 'tom',
         isLike: true,
-        mandatory: true
-      }
+        mandatory: true,
+      },
     ],
-    primitive: BASE_PRIMITIVES
+    primitive: BASE_PRIMITIVES,
   },
   value: {
     text: [
       {
         value: 'basecalc',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'valorbase',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'vServ',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'valorservicos',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'VALOR_SERVICO',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'VlBasCalc',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'VALOR_TOTAL',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'VALORTOTALNOTAFISCAL',
-        isLike: false
-      }
+        isLike: false,
+      },
     ],
     ignoredKeys: [
       {
         value: 'itens',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'ITENSNOTA',
-        isLike: false
-      }
+        isLike: false,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
       isCalculated: {
-        value: true
+        value: true,
       },
       isNumber: {
-        value: true
-      }
-    }
+        value: true,
+      },
+    },
   },
   grossValue: {
     text: [
       {
         value: 'basecalc',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'vprod',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'valorbase',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'vServ',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'valorservicos',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'VALOR_NOTA',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'VALOR_TOTAL',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'ValorNFS',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'VALORTOTALNOTAFISCAL',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'VALORTOTALBASEISSQN',
-        isLike: false
-      }
+        isLike: false,
+      },
+      {
+        value: 'ValorTotal',
+        isLike: false,
+      },
     ],
     ignoredKeys: [
       {
         value: 'itens',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'ITENSNOTA',
-        isLike: false
-      }
+        isLike: false,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
       isCalculated: {
-        value: true
+        value: true,
       },
       isNumber: {
-        value: true
-      }
-    }
+        value: true,
+      },
+    },
   },
   liquidValue: {
     text: [
       {
         value: 'liquido',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'Liquido',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'vLiq',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'VALORTOTALNOTAFISCAL',
-        isLike: false
-      }
+        isLike: false,
+      },
     ],
     ignoredKeys: [
       {
         value: 'itens',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'ITENSNOTA',
-        isLike: false
-      }
+        isLike: false,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
       isCalculated: {
-        value: true
+        value: true,
       },
       isNumber: {
-        value: true
-      }
-    }
+        value: true,
+      },
+    },
   },
   number: {
     text: [
       {
         value: 'NUM_NOTA',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'numero',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'NumNF',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'cod',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'nNF',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'NOTAFISCALNUMERO',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'NumeroNFe',
-        isLike: false
+        isLike: false,
+      },
+      {
+        value: 'NumeroNFS-e',
+        isLike: false,
       },
     ],
     ignoredKeys: [
       {
         value: 'emit',
         isLike: true,
-        mandatory: true
+        mandatory: true,
       },
       {
         value: 'prest',
         isLike: true,
-        mandatory: true
+        mandatory: true,
       },
       {
         value: 'toma',
         isLike: true,
-        mandatory: true
+        mandatory: true,
       },
       {
         value: 'dest',
         isLike: true,
-        mandatory: true
+        mandatory: true,
       },
       {
         value: 'tom',
         isLike: true,
-        mandatory: true
-      }
+        mandatory: true,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
       isNumber: {
-        value: true
-      }
-    }
+        value: true,
+      },
+    },
   },
   withheldIss: {
     text: [
       {
         value: 'issretido',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'ISSQNRetido',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'retido',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'RETIDO',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'Codigo',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'ValorIssRet',
-        isLike: false
-      }
+        isLike: false,
+      },
     ],
     ignoredKeys: [
       {
         value: 'itens',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'servicos',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'emit',
         isLike: true,
-        mandatory: true
+        mandatory: true,
       },
       {
         value: 'prestador',
         isLike: true,
-        mandatory: true
+        mandatory: true,
       },
       {
         value: 'toma',
         isLike: true,
-        mandatory: true
+        mandatory: true,
       },
       {
         value: 'dest',
         isLike: true,
-        mandatory: true
+        mandatory: true,
       },
       {
         value: 'tom',
         isLike: true,
-        mandatory: true
+        mandatory: true,
       },
       {
         value: 'ITENSNOTA',
-        isLike: false
-      }
+        isLike: false,
+      },
     ],
     keyValidators: [
       {
         value: 'ExigibilidadeISSQN',
         isLike: true,
-        mandatory: false
-      }
+        mandatory: false,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
       isNumber: {
-        value: false
-      }
-    }
+        value: false,
+      },
+    },
   },
   issValue: {
     text: [
       {
         value: 'valoriss',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'VALOR_ISS',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'ValorISSQNCalculado',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'vISSQN',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'VALOR_ISS_RET',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'valorImposto',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'IMPOSTO',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'VALORTOTALISSQRETIDO',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'ValorIssRetido',
-        isLike: false
-      }
+        isLike: false,
+      },
+      {
+        value: 'Issqn',
+        isLike: false,
+      },
     ],
     ignoredKeys: [
       {
         value: 'ITENSNOTA',
-        isLike: false
-      }
+        isLike: false,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
       isNumber: {
-        value: true
+        value: true,
       },
       isCalculated: {
-        value: true
-      }
-    }
+        value: true,
+      },
+    },
   },
   inssValue: {
     text: [
@@ -584,203 +596,203 @@ const validators: Validators = {
     text: [
       {
         value: 'deducoes',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'vDesc',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'Deduc',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'vCalcDR',
-        isLike: false
-      }
+        isLike: false,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
       isNumber: {
-        value: true
+        value: true,
       },
       isCalculated: {
-        value: true
-      }
-    }
+        value: true,
+      },
+    },
   },
   retentions: {
     text: [
       {
         value: 'retenc',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'vTotalRet',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'valorImposto',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'retencao',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'VALOR_IR',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'ValorIr',
-        isLike: false
-      }
+        isLike: false,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
       isNumber: {
-        value: true
+        value: true,
       },
       isCalculated: {
-        value: true
-      }
-    }
+        value: true,
+      },
+    },
   },
   operationNature: {
     text: [
       {
         value: 'NaturezaOperacao',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'ExigibilidadeISS',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'natureza',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'operacao',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'Codigo',
-        isLike: false
+        isLike: false,
       },
       {
         value: 'natOp',
-        isLike: false
-      }
+        isLike: false,
+      },
     ],
     ignoredKeys: [
       {
         value: 'itens',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'servicos',
-        isLike: true
-      }
+        isLike: true,
+      },
     ],
     keyValidators: [
       {
         value: 'ExigibilidadeISSQN',
         isLike: true,
-        mandatory: false
-      }
+        mandatory: false,
+      },
     ],
     primitive: {
-      ...BASE_PRIMITIVES
-    }
+      ...BASE_PRIMITIVES,
+    },
   },
   cnpjPrest: {
     text: [
       {
         value: 'CpfCnpjPre',
         isLike: false,
-        notValidated: true
-      }
+        notValidated: true,
+      },
     ],
-    primitive: BASE_PRIMITIVES
+    primitive: BASE_PRIMITIVES,
   },
   cnpjToma: {
     text: [
       {
         value: 'CpfCnpjTom',
         isLike: false,
-        notValidated: true
-      }
+        notValidated: true,
+      },
     ],
-    primitive: BASE_PRIMITIVES
+    primitive: BASE_PRIMITIVES,
   },
   discount: {
     text: [
       {
         value: 'Desconto',
-        isLike: true
-      }
+        isLike: true,
+      },
     ],
     ignoredKeys: [
       {
         value: 'itens',
-        isLike: true
+        isLike: true,
       },
       {
         value: 'ITENSNOTA',
-        isLike: false
-      }
+        isLike: false,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
       isCalculated: {
-        value: true
+        value: true,
       },
       isNumber: {
-        value: true
-      }
-    }
-  }
+        value: true,
+      },
+    },
+  },
 }
 
 const findNf = (ND: any): any => {
   const isArray = Array.isArray(ND)
   const isObject = typeof ND === 'object'
-  
+
   if (isArray) {
     return findNf(ND[0])
   }
-  
+
   if (isObject) {
     const keys = Object.keys(ND)
-    
+
     if (keys.length > 1) {
       const indexValues = keys.findIndex(
         (item) => item.toLowerCase().indexOf('valor') > -1
       )
-      
+
       const indexNFSE = keys.findIndex(
         (item) => item.toLowerCase().indexOf('nfse') > -1
       )
-      
+
       const indexNFE = keys.findIndex(
         (item) => item.toLowerCase().indexOf('nfe') > -1
       )
-      
+
       if (indexNFSE > -1 && keys.length < 7 && indexValues < 0) {
         return findNf(ND[keys[indexNFSE]])
       }
-      
+
       if (indexNFE > -1 && keys.length < 7 && indexValues < 0) {
         return findNf(ND[keys[indexNFE]])
       }
-      
+
       return ND
     }
-    
+
     return findNf(ND[keys[0]])
   }
-  
+
   return null
 }
 
@@ -793,27 +805,27 @@ const searchItem = (
   ignoredKeys: KeyTextItem[] = []
 ) => {
   const searchedItem = findItem(NF, item, validator, ignoredKeys)?.found
-  
+
   const foundItemIsAObject = typeof foundItem === 'object'
   const searchedItemIsAObject = typeof searchedItem === 'object'
-  
+
   const hasSearchedItemAndFoundItemIsNotValid =
     (!foundItem || foundItemIsAObject) && searchedItem
-  
+
   const isCalculatedAndIsHigher = validatorFunctions.isCalculated(
     foundItem,
     searchedItem,
     primitive
   )
-  
+
   const isValid =
     hasSearchedItemAndFoundItemIsNotValid || isCalculatedAndIsHigher
-  
+
   const isNumber = validatorFunctions.isNumber(searchedItem)
-  
+
   if (primitive.isNumber.value) {
     const isInt = validatorFunctions.isInt(searchedItem)
-    
+
     if (isValid && isNumber) {
       return primitive.isInt.value
         ? isInt
@@ -821,18 +833,18 @@ const searchItem = (
           : undefined
         : searchedItem
     }
-    
+
     return
   }
-  
+
   if (isValid) {
     const filteredItem = searchedItemIsAObject
       ? findItem(searchedItem, item, undefined, ignoredKeys)?.found
       : searchedItem
-    
+
     return filteredItem
   }
-  
+
   return undefined
 }
 
@@ -848,12 +860,12 @@ const findItemByList = (
   list.forEach((item) => {
     if (validatorsList.length > 0 && !item.notValidated) {
       let shouldReturn = false
-      
+
       validatorsList.forEach((valid) => {
         if (keys.length < 5) {
           keys.forEach((key) => {
             const nf = Array.isArray(NF[key]) ? NF[key][0] : NF[key]
-            
+
             const searchedItem = searchItem(
               nf,
               item,
@@ -862,7 +874,7 @@ const findItemByList = (
               primitive,
               ignoredKeys
             )
-            
+
             if (searchedItem) {
               foundItem = searchedItem
             }
@@ -876,22 +888,22 @@ const findItemByList = (
             primitive,
             ignoredKeys
           )
-          
+
           if (searchedItem) {
             foundItem = searchedItem
           }
         }
-        
+
         if (!shouldReturn) {
           shouldReturn = !!valid.mandatory
         }
       })
-      
+
       if (shouldReturn) {
         return
       }
     }
-    
+
     const searchedItem = searchItem(
       NF,
       item,
@@ -900,18 +912,18 @@ const findItemByList = (
       primitive,
       ignoredKeys
     )
-    
+
     if (searchedItem) {
       foundItem = searchedItem
     }
   })
-  
+
   if (typeof foundItem === 'object') {
     const values = Object.values(foundItem)
-    
+
     return Array.isArray(values[0]) ? values[0][0] : values[0]
   }
-  
+
   return foundItem
 }
 
@@ -923,36 +935,36 @@ const findItem = (
 ) => {
   if (keyValidator.value.trim()) {
     const keys = Object.keys(NF)
-    
+
     const filteredKeys = keys.filter(
       (key) => key.toLowerCase().indexOf(keyValidator.value.toLowerCase()) > -1
     )
-    
+
     if (filteredKeys.length > 5) {
       const keyIndex = filteredKeys.findIndex(
         (filtKey) =>
           filtKey.toLowerCase().indexOf(item.value.toLowerCase()) > -1
       )
-      
+
       const value = findVal(
         NF,
         {
           ...item,
-          value: filteredKeys[keyIndex]
+          value: filteredKeys[keyIndex],
         },
         undefined,
         undefined,
         ignoredKeys
       )
-      
+
       if (value) {
         return {
-          found: value
+          found: value,
         }
       }
     }
   }
-  
+
   const value = findVal(
     NF,
     item,
@@ -960,13 +972,13 @@ const findItem = (
     undefined,
     ignoredKeys
   )
-  
+
   if (value) {
     return {
-      found: value
+      found: value,
     }
   }
-  
+
   return null
 }
 
@@ -978,19 +990,19 @@ function findVal(
   ignoredKeys: KeyTextItem[] = []
 ) {
   var value: any
-  Object.keys(object).some(function(k) {
+  Object.keys(object).some(function (k) {
     if (keyObj.value === undefined) return false
-    
+
     if (ignoredKeys.length > 0) {
       const index = ignoredKeys.findIndex((item) =>
         item.isLike
           ? k.toLowerCase().indexOf(item.value.toLowerCase()) > -1
           : k.toLowerCase() === item.value.toLowerCase()
       )
-      
+
       if (index > -1) return false
     }
-    
+
     if (
       keyValidator &&
       (keyValidator.isLike
@@ -998,7 +1010,7 @@ function findVal(
         : k.toLowerCase() === keyValidator.value.toLowerCase())
     ) {
       const kValue = Array.isArray(object[k]) ? object[k][0] : object[k]
-      
+
       value = findVal(
         object[k],
         keyObj,
@@ -1006,10 +1018,10 @@ function findVal(
         typeof kValue === 'object',
         ignoredKeys
       )
-      
+
       return value !== undefined
     }
-    
+
     if (
       keyObj.isLike
         ? k.toLowerCase().indexOf(keyObj.value.toLowerCase()) > -1
@@ -1020,13 +1032,13 @@ function findVal(
         return true
       }
     }
-    
+
     if (object[k] && typeof object[k] === 'object') {
       value = findVal(object[k], keyObj, keyValidator, validated, ignoredKeys)
       return value !== undefined
     }
   })
-  
+
   return value
 }
 
@@ -1037,67 +1049,67 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
     const parser = new xml2js.Parser({
       attrkey: 'ATTR',
       tagNameProcessors: [stripPrefix],
-      attrNameProcessors: [stripPrefix]
+      attrNameProcessors: [stripPrefix],
     })
-    
+
     parser.parseString(xmlString, (error, result) => {
       if (error) resolve(false)
       else resolve(result)
     })
   })
-  
+
   if (result?.EnviarLoteRpsEnvio) {
     throw Error(
       'Não é possivel validar o fiscal com o XML do RPS, é nescessario o XML da nota fiscal.'
     )
   }
-  
+
   try {
     const nfs = findNf(result)
-    
+
     const cnpjEmitWithValidator = findItemByList(
       nfs,
       validators.cpnj.text,
       validators.cpnj.keyValidatorsFrom
     )
-    
+
     const cnpjPrest = findItemByList(nfs, validators.cnpjPrest.text)
-    
+
     const cnpjToma = findItemByList(nfs, validators.cnpjToma.text)
-    
+
     const cnpjDestWithValidator = findItemByList(
       nfs,
       validators.cpnj.text,
       validators.cpnj.keyValidatorsTo
     )
-    
+
     const cpfEmit = findItemByList(
       nfs,
       validators.cpf.text,
       validators.cpf.keyValidatorsFrom
     )
-    
+
     const cnpjEmit = cnpjEmitWithValidator
       ? cnpjEmitWithValidator
       : cnpjPrest
-        ? cnpjPrest
-        : undefined
+      ? cnpjPrest
+      : undefined
     const cnpjDest = cnpjDestWithValidator
       ? cnpjDestWithValidator
       : cnpjToma
-        ? cnpjToma
-        : undefined
+      ? cnpjToma
+      : undefined
     const realCnpjEmit = cnpjEmit ? cnpjEmit.replace(/\D/g, '') : undefined
     const realCnpjDest = cnpjDest ? cnpjDest.replace(/\D/g, '') : undefined
     const realCpfEmit = cpfEmit ? cpfEmit.replace(/\D/g, '') : undefined
-    
+
     const valorNF = findItemByList(
       nfs,
       validators.value.text,
       [],
       validators.value.primitive
     )
-    
+
     const numero = findItemByList(
       nfs,
       validators.number.text,
@@ -1105,7 +1117,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.number.primitive,
       validators.number.ignoredKeys
     )
-    
+
     const iss =
       findItemByList(
         nfs,
@@ -1114,7 +1126,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
         validators.withheldIss.primitive,
         validators.withheldIss.ignoredKeys
       ) ?? '0'
-    
+
     const valorIss =
       findItemByList(
         nfs,
@@ -1123,7 +1135,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
         validators.issValue.primitive,
         validators.issValue.ignoredKeys
       ) ?? '0'
-    
+
     const valorBruto = findItemByList(
       nfs,
       validators.grossValue.text,
@@ -1131,7 +1143,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.grossValue.primitive,
       validators.grossValue.ignoredKeys
     )
-    
+
     const valorLiquido = findItemByList(
       nfs,
       validators.liquidValue.text,
@@ -1139,7 +1151,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.liquidValue.primitive,
       validators.liquidValue.ignoredKeys
     )
-    
+
     const valorDeducoes =
       findItemByList(
         nfs,
@@ -1147,7 +1159,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
         [],
         validators.deductionValue.primitive
       ) ?? '0'
-    
+
     const retencoes =
       findItemByList(
         nfs,
@@ -1155,7 +1167,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
         [],
         validators.retentions.primitive
       ) ?? '0'
-    
+
     const descontos = findItemByList(
       nfs,
       validators.discount.text,
@@ -1163,7 +1175,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.discount.primitive,
       validators.discount.ignoredKeys
     )
-    
+
     const naturezaOperacao = findItemByList(
       nfs,
       validators.operationNature.text,
@@ -1171,7 +1183,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.operationNature.primitive,
       validators.operationNature.ignoredKeys
     )
-    
+
     const inssValue = findItemByList(
       nfs,
       validators.inssValue.text,
@@ -1179,18 +1191,17 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.inssValue.primitive,
       validators.inssValue.ignoredKeys
     )
-    
-    
+
     const valorLiquidoValidado = !!valorLiquido
       ? valorLiquido
       : getNumber(valorNF) - getNumber(retencoes)
-    
+
     const valorBrutoValidado = descontos
       ? getNumber(valorBruto) - getNumber(descontos) >= getNumber(valorLiquido)
         ? getNumber(valorBruto) - getNumber(descontos)
         : getNumber(valorBruto)
       : getNumber(valorBruto)
-    
+
     return {
       cnpjEmit: realCnpjEmit,
       cnpjDest: realCnpjDest,
@@ -1205,7 +1216,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       descontos,
       iss,
       numero,
-      naturezaOperacao
+      naturezaOperacao,
     }
   } catch (error) {
     throw error
