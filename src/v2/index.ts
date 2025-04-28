@@ -319,7 +319,7 @@ const validators: Validators = {
         isLike: true,
       },
       {
-        value: 'VALORTOTALNOTAFISCAL',
+        value: 'VALORTOTALLIQUIDO',
         isLike: false,
       },
     ],
@@ -921,7 +921,7 @@ const findItemByList = (
   if (typeof foundItem === 'object') {
     const values = Object.values(foundItem)
 
-    return Array.isArray(values[0]) ? values[0][0] : values[0]
+    return Array.isArray(values[0]) ? values[0][0] : (values[0] as string)
   }
 
   return foundItem
@@ -1193,8 +1193,10 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
     )
 
     const valorLiquidoValidado = !!valorLiquido
-      ? valorLiquido
+      ? getNumber(valorLiquido)
       : getNumber(valorNF) - getNumber(retencoes)
+
+    console.log(valorLiquido)
 
     const valorBrutoValidado = descontos
       ? getNumber(valorBruto) - getNumber(descontos) >= getNumber(valorLiquido)
