@@ -1,14 +1,13 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-      {
-        "type": "node",
-        "request": "launch",
-        "name": "Launch Test Script",
-        "program": "${workspaceFolder}/tests/testS3/index.js",
-        "preLaunchTask": "yarn", // Isto irá executar `yarn build` antes do script.
-        "stopOnEntry": false
-      }
-    ]
-  }
-  
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Test Script",
+      "program": "${workspaceFolder}/tests/testS3/index.js",
+      "preLaunchTask": "yarn",
+      "stopOnEntry": false
+    }
+  ]
+}

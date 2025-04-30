@@ -358,12 +358,8 @@ const validators: Validators = {
         isLike: false,
       },
       {
-        value: 'cod',
-        isLike: true,
-      },
-      {
-        value: 'nNF',
-        isLike: true,
+        value: 'numero_nfse',
+        isLike: false,
       },
       {
         value: 'NOTAFISCALNUMERO',
@@ -376,6 +372,14 @@ const validators: Validators = {
       {
         value: 'NumeroNFS-e',
         isLike: false,
+      },
+      {
+        value: 'cod',
+        isLike: true,
+      },
+      {
+        value: 'nNF',
+        isLike: true,
       },
     ],
     ignoredKeys: [
@@ -866,10 +870,13 @@ const findItemByList = (
           keys.forEach((key) => {
             const nf = Array.isArray(NF[key]) ? NF[key][0] : NF[key]
 
+            const validKey =
+              key.toLowerCase().indexOf(valid.value.toLowerCase()) > -1
+
             const searchedItem = searchItem(
               nf,
               item,
-              valid,
+              validKey ? undefined : valid,
               foundItem,
               primitive,
               ignoredKeys
@@ -1195,8 +1202,6 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
     const valorLiquidoValidado = !!valorLiquido
       ? getNumber(valorLiquido)
       : getNumber(valorNF) - getNumber(retencoes)
-
-    console.log(valorLiquido)
 
     const valorBrutoValidado = descontos
       ? getNumber(valorBruto) - getNumber(descontos) >= getNumber(valorLiquido)
