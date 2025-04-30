@@ -240,18 +240,6 @@ const validators: Validators = {
   grossValue: {
     text: [
       {
-        value: 'basecalc',
-        isLike: true,
-      },
-      {
-        value: 'vprod',
-        isLike: true,
-      },
-      {
-        value: 'valorbase',
-        isLike: true,
-      },
-      {
         value: 'vServ',
         isLike: false,
       },
@@ -282,6 +270,22 @@ const validators: Validators = {
       {
         value: 'ValorTotal',
         isLike: false,
+      },
+      {
+        value: 'ValorTotalNota',
+        isLike: false,
+      },
+      {
+        value: 'basecalc',
+        isLike: true,
+      },
+      {
+        value: 'vprod',
+        isLike: true,
+      },
+      {
+        value: 'valorbase',
+        isLike: true,
       },
     ],
     ignoredKeys: [
@@ -371,6 +375,10 @@ const validators: Validators = {
       },
       {
         value: 'NumeroNFS-e',
+        isLike: false,
+      },
+      {
+        value: 'NumeroNF',
         isLike: false,
       },
       {
@@ -717,6 +725,11 @@ const validators: Validators = {
         isLike: false,
         notValidated: true,
       },
+      {
+        value: 'CNPJCPFPrestador',
+        isLike: false,
+        notValidated: true,
+      },
     ],
     primitive: BASE_PRIMITIVES,
   },
@@ -724,6 +737,11 @@ const validators: Validators = {
     text: [
       {
         value: 'CpfCnpjTom',
+        isLike: false,
+        notValidated: true,
+      },
+      {
+        value: 'CNPJCPFTomador',
         isLike: false,
         notValidated: true,
       },
