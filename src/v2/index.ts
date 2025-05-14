@@ -788,6 +788,12 @@ const findNf = (ND: any): any => {
   if (isObject) {
     const keys = Object.keys(ND)
 
+    if (keys.includes('EnviarLoteRpsEnvio')) {
+      throw new Error(
+        'Não é possivel validar o fiscal com o XML do RPS, é nescessario o XML da nota fiscal.'
+      )
+    }
+
     if (keys.length > 1) {
       const indexValues = keys.findIndex(
         (item) => item.toLowerCase().indexOf('valor') > -1
