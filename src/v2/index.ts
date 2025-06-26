@@ -775,6 +775,43 @@ const validators: Validators = {
       },
     },
   },
+  emissionDate: {
+    text: [
+      {
+        value: 'DataEmissao',
+        isLike: true,
+      },
+      {
+        value: 'dhEmi',
+        isLike: true,
+      },
+      {
+        value: 'data_nfse',
+        isLike: false,
+      },
+      {
+        value: 'DATA',
+        isLike: false,
+      },
+    ],
+    primitive: BASE_PRIMITIVES,
+  },
+  emissionDateUnix: {
+    text: [
+      {
+        value: 'iLocalMillis',
+        isLike: false,
+      },
+    ],
+    primitive: BASE_PRIMITIVES,
+    keyValidators: [
+      {
+        value: 'dataEmissao',
+        isLike: false,
+        mandatory: true,
+      },
+    ]
+  }
 }
 
 const findNf = (ND: any): any => {
@@ -1223,6 +1260,38 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.inssValue.ignoredKeys
     )
 
+    const emissionDate = findItemByList(
+      nfs,
+      validators.emissionDate.text,
+      [],
+      validators.emissionDate.primitive,
+    )
+
+    const emissionDateUnix = findItemByList(
+      nfs,
+      validators.emissionDateUnix.text,
+      validators.emissionDateUnix.keyValidators,
+      validators.emissionDateUnix.primitive,
+    )
+
+    const isBrazilianDate = emissionDate?.match(/[0-9]{2}\/[0-9]{2}\/[0-9]{4}/)
+
+    let dateText = ''
+
+    if (isBrazilianDate && emissionDate) {
+      const dates = emissionDate.split('/')
+
+      dateText = `${dates[2]}-${dates[1]}-${dates[0]} 04:00:00`
+    } else if (emissionDate) {
+      dateText = emissionDate
+    }
+
+    const dataEmissao = emissionDateUnix
+      ? new Date(Number(emissionDateUnix))
+      : emissionDate
+      ? new Date(dateText)
+      : undefined
+
     const valorLiquidoValidado = !!valorLiquido
       ? getNumber(valorLiquido)
       : getNumber(valorNF) - getNumber(retencoes)
@@ -1248,6 +1317,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       iss,
       numero,
       naturezaOperacao,
+      dataEmissao
     }
   } catch (error) {
     throw error

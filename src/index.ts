@@ -21,6 +21,7 @@ declare module 'data-nfs' {
     valorDeducoes: string
     retencoes: string
     naturezaOperacao?: string
+    dataEmissao?: Date
   }
   export const getDataNFSv2: (xml: string) => Promise<V2Response>
 }
