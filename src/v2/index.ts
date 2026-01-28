@@ -286,6 +286,10 @@ const validators: Validators = {
         isLike: false,
       },
       {
+        value: 'valorServico',
+        isLike: false,
+      },
+      {
         value: 'basecalc',
         isLike: true,
       },
