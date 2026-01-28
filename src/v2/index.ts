@@ -51,7 +51,7 @@ const validatorFunctions: ValidationPrimitivesFunction = {
   isCalculated: (
     foundItem: any,
     searchedItem: any,
-    primitive: ValidationPrimitives
+    primitive: ValidationPrimitives,
   ) => {
     const foundItemIsAObject = typeof foundItem === 'object'
     const searchedItemIsAObject = typeof searchedItem === 'object'
@@ -101,6 +101,11 @@ const validators: Validators = {
     ],
     keyValidatorsFrom: [
       {
+        value: 'PrestadorServicos',
+        isLike: false,
+        mandatory: true,
+      },
+      {
         value: 'emit',
         isLike: true,
         mandatory: true,
@@ -117,6 +122,11 @@ const validators: Validators = {
       },
     ],
     keyValidatorsTo: [
+      {
+        value: 'TomadorServicos',
+        isLike: false,
+        mandatory: true,
+      },
       {
         value: 'toma',
         isLike: true,
@@ -810,8 +820,8 @@ const validators: Validators = {
         isLike: false,
         mandatory: true,
       },
-    ]
-  }
+    ],
+  },
 }
 
 const findNf = (ND: any): any => {
@@ -827,21 +837,21 @@ const findNf = (ND: any): any => {
 
     if (keys.includes('EnviarLoteRpsEnvio')) {
       throw new Error(
-        'Não é possivel validar o fiscal com o XML do RPS, é nescessario o XML da nota fiscal.'
+        'Não é possivel validar o fiscal com o XML do RPS, é nescessario o XML da nota fiscal.',
       )
     }
 
     if (keys.length > 1) {
       const indexValues = keys.findIndex(
-        (item) => item.toLowerCase().indexOf('valor') > -1
+        (item) => item.toLowerCase().indexOf('valor') > -1,
       )
 
       const indexNFSE = keys.findIndex(
-        (item) => item.toLowerCase().indexOf('nfse') > -1
+        (item) => item.toLowerCase().indexOf('nfse') > -1,
       )
 
       const indexNFE = keys.findIndex(
-        (item) => item.toLowerCase().indexOf('nfe') > -1
+        (item) => item.toLowerCase().indexOf('nfe') > -1,
       )
 
       if (indexNFSE > -1 && keys.length < 7 && indexValues < 0) {
@@ -867,7 +877,7 @@ const searchItem = (
   validator?: KeyTextItem,
   foundItem?: any,
   primitive: ValidationPrimitives = BASE_PRIMITIVES,
-  ignoredKeys: KeyTextItem[] = []
+  ignoredKeys: KeyTextItem[] = [],
 ) => {
   const searchedItem = findItem(NF, item, validator, ignoredKeys)?.found
 
@@ -880,7 +890,7 @@ const searchItem = (
   const isCalculatedAndIsHigher = validatorFunctions.isCalculated(
     foundItem,
     searchedItem,
-    primitive
+    primitive,
   )
 
   const isValid =
@@ -918,7 +928,7 @@ const findItemByList = (
   list: TextItem[],
   validatorsList: KeyTextItem[] = [],
   primitive: ValidationPrimitives = BASE_PRIMITIVES,
-  ignoredKeys: KeyTextItem[] = []
+  ignoredKeys: KeyTextItem[] = [],
 ): string | undefined => {
   let foundItem: any
   const keys = Object.keys(NF)
@@ -940,7 +950,7 @@ const findItemByList = (
               validKey ? undefined : valid,
               foundItem,
               primitive,
-              ignoredKeys
+              ignoredKeys,
             )
 
             if (searchedItem) {
@@ -954,7 +964,7 @@ const findItemByList = (
             valid,
             foundItem,
             primitive,
-            ignoredKeys
+            ignoredKeys,
           )
 
           if (searchedItem) {
@@ -978,7 +988,7 @@ const findItemByList = (
       BASE_TEXT_ITEM,
       foundItem,
       primitive,
-      ignoredKeys
+      ignoredKeys,
     )
 
     if (searchedItem) {
@@ -999,19 +1009,19 @@ const findItem = (
   NF: any,
   item: TextItem,
   keyValidator: TextItem = BASE_TEXT_ITEM,
-  ignoredKeys: KeyTextItem[] = []
+  ignoredKeys: KeyTextItem[] = [],
 ) => {
   if (keyValidator.value.trim()) {
     const keys = Object.keys(NF)
 
     const filteredKeys = keys.filter(
-      (key) => key.toLowerCase().indexOf(keyValidator.value.toLowerCase()) > -1
+      (key) => key.toLowerCase().indexOf(keyValidator.value.toLowerCase()) > -1,
     )
 
     if (filteredKeys.length > 5) {
       const keyIndex = filteredKeys.findIndex(
         (filtKey) =>
-          filtKey.toLowerCase().indexOf(item.value.toLowerCase()) > -1
+          filtKey.toLowerCase().indexOf(item.value.toLowerCase()) > -1,
       )
 
       const value = findVal(
@@ -1022,7 +1032,7 @@ const findItem = (
         },
         undefined,
         undefined,
-        ignoredKeys
+        ignoredKeys,
       )
 
       if (value) {
@@ -1038,7 +1048,7 @@ const findItem = (
     item,
     keyValidator.value.trim() ? keyValidator : undefined,
     undefined,
-    ignoredKeys
+    ignoredKeys,
   )
 
   if (value) {
@@ -1055,7 +1065,7 @@ function findVal(
   keyObj: TextItem,
   keyValidator?: TextItem,
   validated = false,
-  ignoredKeys: KeyTextItem[] = []
+  ignoredKeys: KeyTextItem[] = [],
 ) {
   var value: any
   Object.keys(object).some(function (k) {
@@ -1065,7 +1075,7 @@ function findVal(
       const index = ignoredKeys.findIndex((item) =>
         item.isLike
           ? k.toLowerCase().indexOf(item.value.toLowerCase()) > -1
-          : k.toLowerCase() === item.value.toLowerCase()
+          : k.toLowerCase() === item.value.toLowerCase(),
       )
 
       if (index > -1) return false
@@ -1084,7 +1094,7 @@ function findVal(
         keyObj,
         keyValidator,
         typeof kValue === 'object',
-        ignoredKeys
+        ignoredKeys,
       )
 
       return value !== undefined
@@ -1128,7 +1138,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
 
   if (result?.EnviarLoteRpsEnvio) {
     throw Error(
-      'Não é possivel validar o fiscal com o XML do RPS, é nescessario o XML da nota fiscal.'
+      'Não é possivel validar o fiscal com o XML do RPS, é nescessario o XML da nota fiscal.',
     )
   }
 
@@ -1138,7 +1148,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
     const cnpjEmitWithValidator = findItemByList(
       nfs,
       validators.cpnj.text,
-      validators.cpnj.keyValidatorsFrom
+      validators.cpnj.keyValidatorsFrom,
     )
 
     const cnpjPrest = findItemByList(nfs, validators.cnpjPrest.text)
@@ -1148,25 +1158,25 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
     const cnpjDestWithValidator = findItemByList(
       nfs,
       validators.cpnj.text,
-      validators.cpnj.keyValidatorsTo
+      validators.cpnj.keyValidatorsTo,
     )
 
     const cpfEmit = findItemByList(
       nfs,
       validators.cpf.text,
-      validators.cpf.keyValidatorsFrom
+      validators.cpf.keyValidatorsFrom,
     )
 
     const cnpjEmit = cnpjEmitWithValidator
       ? cnpjEmitWithValidator
       : cnpjPrest
-      ? cnpjPrest
-      : undefined
+        ? cnpjPrest
+        : undefined
     const cnpjDest = cnpjDestWithValidator
       ? cnpjDestWithValidator
       : cnpjToma
-      ? cnpjToma
-      : undefined
+        ? cnpjToma
+        : undefined
     const realCnpjEmit = cnpjEmit ? cnpjEmit.replace(/\D/g, '') : undefined
     const realCnpjDest = cnpjDest ? cnpjDest.replace(/\D/g, '') : undefined
     const realCpfEmit = cpfEmit ? cpfEmit.replace(/\D/g, '') : undefined
@@ -1175,7 +1185,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       nfs,
       validators.value.text,
       [],
-      validators.value.primitive
+      validators.value.primitive,
     )
 
     const numero = findItemByList(
@@ -1183,7 +1193,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.number.text,
       [],
       validators.number.primitive,
-      validators.number.ignoredKeys
+      validators.number.ignoredKeys,
     )
 
     const iss =
@@ -1192,7 +1202,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
         validators.withheldIss.text,
         [],
         validators.withheldIss.primitive,
-        validators.withheldIss.ignoredKeys
+        validators.withheldIss.ignoredKeys,
       ) ?? '0'
 
     const valorIss =
@@ -1201,7 +1211,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
         validators.issValue.text,
         [],
         validators.issValue.primitive,
-        validators.issValue.ignoredKeys
+        validators.issValue.ignoredKeys,
       ) ?? '0'
 
     const valorBruto = findItemByList(
@@ -1209,7 +1219,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.grossValue.text,
       [],
       validators.grossValue.primitive,
-      validators.grossValue.ignoredKeys
+      validators.grossValue.ignoredKeys,
     )
 
     const valorLiquido = findItemByList(
@@ -1217,7 +1227,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.liquidValue.text,
       [],
       validators.liquidValue.primitive,
-      validators.liquidValue.ignoredKeys
+      validators.liquidValue.ignoredKeys,
     )
 
     const valorDeducoes =
@@ -1225,7 +1235,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
         nfs,
         validators.deductionValue.text,
         [],
-        validators.deductionValue.primitive
+        validators.deductionValue.primitive,
       ) ?? '0'
 
     const retencoes =
@@ -1233,7 +1243,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
         nfs,
         validators.retentions.text,
         [],
-        validators.retentions.primitive
+        validators.retentions.primitive,
       ) ?? '0'
 
     const descontos = findItemByList(
@@ -1241,7 +1251,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.discount.text,
       [],
       validators.discount.primitive,
-      validators.discount.ignoredKeys
+      validators.discount.ignoredKeys,
     )
 
     const naturezaOperacao = findItemByList(
@@ -1249,7 +1259,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.operationNature.text,
       validators.operationNature.keyValidators,
       validators.operationNature.primitive,
-      validators.operationNature.ignoredKeys
+      validators.operationNature.ignoredKeys,
     )
 
     const inssValue = findItemByList(
@@ -1257,7 +1267,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.inssValue.text,
       [],
       validators.inssValue.primitive,
-      validators.inssValue.ignoredKeys
+      validators.inssValue.ignoredKeys,
     )
 
     const emissionDate = findItemByList(
@@ -1289,8 +1299,8 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
     const dataEmissao = emissionDateUnix
       ? new Date(Number(emissionDateUnix))
       : emissionDate
-      ? new Date(dateText)
-      : undefined
+        ? new Date(dateText)
+        : undefined
 
     const valorLiquidoValidado = !!valorLiquido
       ? getNumber(valorLiquido)
@@ -1317,7 +1327,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       iss,
       numero,
       naturezaOperacao,
-      dataEmissao
+      dataEmissao,
     }
   } catch (error) {
     throw error
