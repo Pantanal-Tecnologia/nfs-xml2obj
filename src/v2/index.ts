@@ -226,6 +226,10 @@ const validators: Validators = {
         value: 'VALORTOTALNOTAFISCAL',
         isLike: false,
       },
+      {
+        value: 'valorBase',
+        isLike: false,
+      },
     ],
     ignoredKeys: [
       {
@@ -234,6 +238,10 @@ const validators: Validators = {
       },
       {
         value: 'ITENSNOTA',
+        isLike: false,
+      },
+      {
+        value: 'servicos',
         isLike: false,
       },
     ],
@@ -311,6 +319,10 @@ const validators: Validators = {
         value: 'ITENSNOTA',
         isLike: false,
       },
+      {
+        value: 'servicos',
+        isLike: false,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
@@ -348,6 +360,10 @@ const validators: Validators = {
       },
       {
         value: 'ITENSNOTA',
+        isLike: false,
+      },
+      {
+        value: 'servicos',
         isLike: false,
       },
     ],
@@ -897,6 +913,9 @@ const searchItem = (
     primitive,
   )
 
+  console.log('searchedItem', searchedItem, 'foundItem', foundItem)
+  console.log('isCalculatedAndIsHigher', isCalculatedAndIsHigher)
+
   const isValid =
     hasSearchedItemAndFoundItemIsNotValid || isCalculatedAndIsHigher
 
@@ -1190,6 +1209,7 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
       validators.value.text,
       [],
       validators.value.primitive,
+      validators.value.ignoredKeys,
     )
 
     const numero = findItemByList(
