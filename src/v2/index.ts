@@ -582,6 +582,10 @@ const validators: Validators = {
         value: 'ITENSNOTA',
         isLike: false,
       },
+      {
+        value: 'servicos',
+        isLike: false,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
@@ -912,9 +916,6 @@ const searchItem = (
     searchedItem,
     primitive,
   )
-
-  console.log('searchedItem', searchedItem, 'foundItem', foundItem)
-  console.log('isCalculatedAndIsHigher', isCalculatedAndIsHigher)
 
   const isValid =
     hasSearchedItemAndFoundItemIsNotValid || isCalculatedAndIsHigher
