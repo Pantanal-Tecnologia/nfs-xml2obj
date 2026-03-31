@@ -798,6 +798,10 @@ const validators: Validators = {
         value: 'ITENSNOTA',
         isLike: false,
       },
+      {
+        value: 'servicos',
+        isLike: false,
+      }
     ],
     primitive: {
       ...BASE_PRIMITIVES,
