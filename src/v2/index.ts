@@ -627,6 +627,10 @@ const validators: Validators = {
         value: 'VALOR_INSS',
         isLike: false,
       },
+      {
+        value: 'vRetCP',
+        isLike: false,
+      },
     ],
     primitive: {
       ...BASE_PRIMITIVES,
