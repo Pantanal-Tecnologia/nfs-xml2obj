@@ -1174,6 +1174,12 @@ const getDataNFSv2 = async (xmlString: string): Promise<V2Response> => {
     )
   }
 
+  if (result?.DPS) {
+    throw Error(
+      'Não é possível validar o fiscal com o XML da DPS, é necessário o XML da nota fiscal.',
+    )
+  }
+
   try {
     const nfs = findNf(result)
 
